@@ -1,0 +1,14 @@
+scenario_id: "SIH_FLAGSHIP_DEMO"
+description: "Flagship SIH 2026 Demonstration: 0-60s Nominal Cruise -> 60s Progressive Injector Restriction (Cyl #2) -> 72s Anomaly -> 180s Isolation -> 300s Autonomous RTB Recommendation"
+flight_id: "FLIGHT_01"
+fault_type: "FT-02_INJECTOR_CLOGGING"
+affected_cylinder: 2
+onset_time_sec: 60
+severity: 0.35
+duration_sec: 650
+mission_type: "MALE_UAV_BORDER_PATROL"
+altitude_profile: "MID_ALTITUDE_LOITER_FL140"
+ambient_temperature_c: 14.5
+total_mission_duration_sec: 7200.0
+random_seed: 42
+data_provenance: "REAL_TELEMETRY_WITH_PHYSICS_INFORMED_FAULT_INJECTION"

@@ -40,7 +40,7 @@ app.add_middleware(
 class AerospaceGCSManager:
     def __init__(self):
         self.pipeline = LiveDigitalTwinPipeline()
-        self.active_scenario = "scenarios/FINAL_SIH_DEMO.yaml"
+        self.active_scenario = "scenarios/SIH_FLAGSHIP_DEMO.yaml"
         self.source_type = "replay"
         self.source = None
         
