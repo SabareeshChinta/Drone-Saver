@@ -1,0 +1,13 @@
+scenario_id: "DEMO-04_LUBRICATION_FAILURE"
+description: "Live 1 Hz Telemetry - Oil Pressure Collapse & Thermal Surge"
+flight_id: "FLIGHT_01"
+fault_type: "FT-06_LUBRICATION_LOSS"
+affected_cylinder: 0
+onset_time_sec: 75
+severity: 0.65
+duration_sec: 60
+mission_type: "DEEP_PENETRATION_ISR"
+altitude_profile: "MID_ALT_CRUISE"
+ambient_temperature_c: 18.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

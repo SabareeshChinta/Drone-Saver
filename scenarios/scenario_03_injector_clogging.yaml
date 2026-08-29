@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_03_INJECTOR_CLOGGING"
+description: "Progressive fuel injector nozzle varnishing on Cylinder #2 leading to lean misfire"
+flight_id: "FLIGHT_02"
+fault_type: "FT-02_INJECTOR_CLOGGING"
+affected_cylinder: 2
+onset_time_sec: 1000
+severity: 0.35
+duration_sec: 1200
+mission_type: "TACTICAL_RECONNAISSANCE"
+altitude_profile: "STEP_CLIMB_CRUISE"
+ambient_temperature_c: 18.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

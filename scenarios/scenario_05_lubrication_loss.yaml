@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_05_LUBRICATION_LOSS"
+description: "Oil gallery pressure collapse and thermal runaway across main bearing journals"
+flight_id: "FLIGHT_01"
+fault_type: "FT-06_LUBRICATION_LOSS"
+affected_cylinder: 0
+onset_time_sec: 1100
+severity: 0.60
+duration_sec: 60
+mission_type: "DEEP_STRIKE_MONITORING"
+altitude_profile: "MID_ALTITUDE_TRANSIT"
+ambient_temperature_c: 20.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

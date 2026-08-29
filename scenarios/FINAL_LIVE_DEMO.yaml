@@ -1,0 +1,13 @@
+scenario_id: "FINAL_LIVE_DEMO"
+description: "Master Real-Time Demonstration: 0-60s Nominal Flight -> 60s Progressive Injector Failure -> Autonomous RTB Transition"
+flight_id: "FLIGHT_01"
+fault_type: "FT-02_INJECTOR_CLOGGING"
+affected_cylinder: 2
+onset_time_sec: 60
+severity: 0.35
+duration_sec: 600
+mission_type: "STRATEGIC_MALE_UAV_MISSION"
+altitude_profile: "CLIMB_CRUISE_LOITER"
+ambient_temperature_c: 14.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

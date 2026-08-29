@@ -1,0 +1,13 @@
+scenario_id: "DEMO-01_HEALTHY"
+description: "Nominal 1 Hz Live UAV Telemetry Stream - 100% Uncompromised Engine"
+flight_id: "FLIGHT_01"
+fault_type: "HEALTHY"
+affected_cylinder: 0
+onset_time_sec: 0
+severity: 0.0
+duration_sec: 0
+mission_type: "LIVE_AUTONOMOUS_LOITER"
+altitude_profile: "MID_ALTITUDE_ORBIT"
+ambient_temperature_c: 15.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

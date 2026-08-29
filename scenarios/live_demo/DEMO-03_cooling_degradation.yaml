@@ -1,0 +1,13 @@
+scenario_id: "DEMO-03_COOLING_DEGRADATION"
+description: "Live 1 Hz Telemetry - Rear Baffle Degradation on Cylinder #4"
+flight_id: "FLIGHT_03"
+fault_type: "FT-05_COOLING_BAFFLE_DEGRADATION"
+affected_cylinder: 4
+onset_time_sec: 90
+severity: 0.85
+duration_sec: 400
+mission_type: "BORDER_SURVEILLANCE"
+altitude_profile: "HIGH_ALT_ORBIT"
+ambient_temperature_c: 22.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

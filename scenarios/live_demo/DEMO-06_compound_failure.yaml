@@ -1,0 +1,13 @@
+scenario_id: "DEMO-06_COMPOUND_FAILURE"
+description: "Live 1 Hz Telemetry - Cooling Baffle Deterioration on Cyl 4 + EGT3 Sensor Drift"
+flight_id: "FLIGHT_01"
+fault_type: "FT-05_COOLING_BAFFLE_DEGRADATION"
+affected_cylinder: 4
+onset_time_sec: 80
+severity: 0.85
+duration_sec: 300
+mission_type: "COMBAT_ISR_LOITER"
+altitude_profile: "HIGH_ALT_ORBIT"
+ambient_temperature_c: 26.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

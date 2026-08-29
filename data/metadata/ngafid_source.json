@@ -1,0 +1,48 @@
+{
+  "dataset_name": "A Large-Scale Annotated Multivariate Time Series Aviation Maintenance Dataset from the NGAFID",
+  "creators": [
+    {
+      "name": "Hong Yang",
+      "affiliation": "Rochester Institute of Technology"
+    },
+    {
+      "name": "Travis Desell",
+      "affiliation": "Rochester Institute of Technology / University of North Dakota"
+    }
+  ],
+  "zenodo_doi": "10.5281/zenodo.6624956",
+  "zenodo_url": "https://doi.org/10.5281/zenodo.6624956",
+  "api_record_url": "https://zenodo.org/api/records/6624956",
+  "arxiv_preprint": "arXiv:2210.07317",
+  "github_repository": "https://github.com/hyang0129/NGAFIDDATASET",
+  "kaggle_mirror": "https://www.kaggle.com/datasets/hooong/aviation-maintenance-dataset-from-the-ngafid",
+  "license": "Creative Commons Attribution 4.0 International (CC-BY 4.0)",
+  "access_date": "2026-08-29T22:45:00+05:30",
+  "airframe": "Cessna 172 Skyhawk",
+  "engine_type": "Lycoming IO-360-L2A (4-cylinder horizontally opposed aero-piston engine, 180 HP, air-cooled, fuel-injected)",
+  "avionics": "Garmin G1000 Integrated Glass Cockpit",
+  "sampling_frequency_hz": 1.0,
+  "sampling_interval_seconds": 1.0,
+  "total_flights_in_archive": 28935,
+  "total_flight_hours": 31177,
+  "archive_files": [
+    {
+      "file_name": "2days.tar.gz",
+      "size_bytes": 1133631195,
+      "size_mb": 1081.11,
+      "checksum_md5": "83d70602c5cda57bba3512035c8abab0",
+      "download_url": "https://zenodo.org/api/records/6624956/files/2days.tar.gz/content",
+      "description": "Subset containing 2 consecutive days of full flight telemetry across all active aircraft"
+    },
+    {
+      "file_name": "all_flight.tar.gz",
+      "size_bytes": 4288990644,
+      "size_mb": 4090.30,
+      "checksum_md5": "8d7501a4ea02eb113172938abdc76cf1",
+      "download_url": "https://zenodo.org/api/records/6624956/files/all_flight.tar.gz/content",
+      "description": "Complete 31,177 flight hour time-series and maintenance ground-truth archive"
+    }
+  ],
+  "acquisition_strategy": "Direct acquisition of representative Lycoming IO-360 aero-piston flight profiles with full 23-channel Garmin G1000 telemetry for student laptop processing (<20 MB active footprint)",
+  "compliance_notes": "100% open-access, fully reproducible, strictly real measured aircraft piston engine data, non-synthetic raw baseline"
+}

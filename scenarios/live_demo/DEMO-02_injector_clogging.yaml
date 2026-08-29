@@ -1,0 +1,13 @@
+scenario_id: "DEMO-02_INJECTOR_CLOGGING"
+description: "Live 1 Hz Telemetry - Fuel Injector Clogging on Cylinder #2"
+flight_id: "FLIGHT_02"
+fault_type: "FT-02_INJECTOR_CLOGGING"
+affected_cylinder: 2
+onset_time_sec: 120
+severity: 0.35
+duration_sec: 800
+mission_type: "TACTICAL_SURVEILLANCE"
+altitude_profile: "CRUISE_FL120"
+ambient_temperature_c: 12.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

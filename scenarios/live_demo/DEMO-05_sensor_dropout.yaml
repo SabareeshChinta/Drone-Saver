@@ -1,0 +1,13 @@
+scenario_id: "DEMO-05_SENSOR_DROPOUT"
+description: "Live 1 Hz Telemetry - Intermittent CHT1 Open-Circuit Dropout"
+flight_id: "FLIGHT_04"
+fault_type: "FT-09_SENSOR_DROPOUT"
+affected_cylinder: 1
+onset_time_sec: 100
+severity: 1.0
+duration_sec: 0
+mission_type: "MARITIME_SEARCH"
+altitude_profile: "LOW_ALT_PATROL"
+ambient_temperature_c: 16.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

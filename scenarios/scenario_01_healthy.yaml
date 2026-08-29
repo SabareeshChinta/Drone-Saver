@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_01_HEALTHY"
+description: "Nominal 2-Hour MALE UAV Flight with uncompromised engine health"
+flight_id: "FLIGHT_01"
+fault_type: "HEALTHY"
+affected_cylinder: 0
+onset_time_sec: 0
+severity: 0.0
+duration_sec: 0
+mission_type: "STANDARD_SURVEILLANCE_LOITER"
+altitude_profile: "CLIMB_CRUISE_DESCENT"
+ambient_temperature_c: 15.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

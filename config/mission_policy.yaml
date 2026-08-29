@@ -1,0 +1,44 @@
+# Drone Saver — UAV Autopilot Mission Risk & Failsafe Policy Configuration
+# Problem Statement: SIH26054 — DRDO
+
+policy_version: "2.1.0"
+target_airframe: "MALE UAV (TAPAS-BH-201 / Archer-NG Class)"
+
+thresholds:
+  # Anomaly & Health Thresholds
+  nominal_health_min: 0.85          # Engine is considered fully healthy
+  degraded_health_min: 0.50         # Warning: Engine entering degraded operational regime
+  critical_health_min: 0.25         # Critical: Immediate severe risk threshold
+  
+  # Monte Carlo Mission Survival Probability Limits
+  continue_mission_p_min: 0.85      # Probability required to maintain standard loiter
+  derate_power_p_min: 0.70          # Probability permitting power derating loiter
+  rtb_safe_p_min: 0.65              # Minimum probability required to reach home base safely
+  
+  # Operational Safety Limits (Physical Redlines)
+  cht_warning_c: 195.0              # Warning CHT limit (°C)
+  cht_redline_c: 224.0              # Critical redline CHT limit (°C)
+  oil_pressure_min_kpa: 200.0       # Minimum safe oil gallery pressure (kPa)
+  oil_temp_max_c: 115.0             # Maximum continuous oil sump temperature (°C)
+  
+actions:
+  CONTINUE_MISSION:
+    code: "CMD_NAV_CONTINUE"
+    throttle_limit_pct: 100.0
+    action_text: "Maintain scheduled waypoint navigation and loiter altitude."
+    
+  DERATE_POWER_AND_LOITER:
+    code: "CMD_PWR_DERATE_65"
+    throttle_limit_pct: 65.0
+    airspeed_delta_mps: +5.0        # Increase airspeed for ram-air cooling
+    action_text: "Derate engine power to 65% throttle; increase airspeed by 5 m/s to maximize convective cooling."
+    
+  RETURN_TO_BASE:
+    code: "CMD_NAV_RTB"
+    throttle_limit_pct: 75.0
+    action_text: "Disengage mission loiter orbit; initiate immediate Return-to-Base (RTB) navigation via direct vector."
+    
+  EMERGENCY_LANDING:
+    code: "CMD_NAV_EMERGENCY_DIVERSION"
+    throttle_limit_pct: 50.0
+    action_text: "Imminent catastrophic powertrain failure. Initiate emergency glide descent to nearest recovery coordinates."

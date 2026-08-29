@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_08_MULTI_REGIME_MISSION"
+description: "Multi-regime high altitude mission with exhaust valve leakage onset during loiter"
+flight_id: "FLIGHT_01"
+fault_type: "FT-03_BURNT_EXHAUST_VALVE"
+affected_cylinder: 3
+onset_time_sec: 800
+severity: 0.85
+duration_sec: 600
+mission_type: "MULTI_REGIME_SURVEILLANCE"
+altitude_profile: "CLIMB_CRUISE_LOITER_DESCENT"
+ambient_temperature_c: 5.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

@@ -1,0 +1,7 @@
+# Drone Saver — Stage 3: RUL & Prognostics Evaluation Report
+**Project:** Drone Saver (SIH26054 — DRDO)
+**Training Sample Count:** 210,163 active degraded telemetry steps
+**R^2 Regression Score:** 0.9346
+**Mean Absolute Error (MAE):** 106.80 seconds (1.78 flight minutes)
+**Root Mean Squared Error (RMSE):** 198.88 seconds (3.31 flight minutes)
+**Uncertainty Quantification:** 90% Confidence Interval via 5th and 95th quantile gradient-boosted trees.

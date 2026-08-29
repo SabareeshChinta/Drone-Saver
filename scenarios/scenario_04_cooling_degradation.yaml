@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_04_COOLING_DEGRADATION"
+description: "Rear cooling air baffle detachment on Cylinder #4 under high power loiter"
+flight_id: "FLIGHT_03"
+fault_type: "FT-05_COOLING_BAFFLE_DEGRADATION"
+affected_cylinder: 4
+onset_time_sec: 900
+severity: 0.90
+duration_sec: 400
+mission_type: "BORDER_PATROL_ORBIT"
+altitude_profile: "HIGH_ALT_CRUISE"
+ambient_temperature_c: 24.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

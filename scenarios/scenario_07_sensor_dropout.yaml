@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_07_SENSOR_DROPOUT"
+description: "Instantaneous thermocouple open-circuit dropout on Cylinder #1 CHT channel"
+flight_id: "FLIGHT_05"
+fault_type: "FT-09_SENSOR_DROPOUT"
+affected_cylinder: 1
+onset_time_sec: 1600
+severity: 1.0
+duration_sec: 0
+mission_type: "LONG_RANGE_MARITIME_PATROL"
+altitude_profile: "OCEANIC_LOITER"
+ambient_temperature_c: 16.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

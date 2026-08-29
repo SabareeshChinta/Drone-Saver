@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_02_IGNITION_SPARK_FOULING"
+description: "Dual-spark plug fouling on Cylinder #1 during mid-cruise loiter"
+flight_id: "FLIGHT_01"
+fault_type: "FT-01_SPARK_PLUG_FOULING"
+affected_cylinder: 1
+onset_time_sec: 1200
+severity: 0.90
+duration_sec: 30
+mission_type: "LONG_ENDURANCE_LOITER"
+altitude_profile: "CRUISE_FL100"
+ambient_temperature_c: 12.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

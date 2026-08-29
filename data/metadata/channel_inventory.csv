@@ -1,0 +1,72 @@
+original_name,canonical_name,unit,data_type,sampling_rate,missing_percentage,source_dataset,notes
+Lcl Date,unmapped_lcl_date,#yyy-mm-dd,object,1.0 Hz,0.000%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+Lcl Time,timestamp,hh:mm:ss,string,1.0 Hz,0.000%,NGAFID Garmin G1000,Local system time of Garmin G1000 MFD
+UTCOfst,unmapped_utcofst,hh:mm,object,1.0 Hz,0.000%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+AtvWpt,unmapped_atvwpt,ident,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+Latitude,unmapped_latitude,degrees,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+Longitude,unmapped_longitude,degrees,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+AltB,unmapped_altb,ft Baro,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+BaroA,unmapped_baroa,inch,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+AltMSL,altitude_m,ft (to m),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Pressure Altitude Mean Sea Level
+OAT,ambient_temp_c,deg C,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Outside Ambient Air Temperature
+IAS,airspeed,kt (to m/s),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Indicated Airspeed
+GndSpd,unmapped_gndspd,kt,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+VSpd,vertical_speed_mps,fpm (to m/s),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Barometric Vertical Speed
+Pitch,pitch_deg,deg,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Aircraft Pitch Attitude
+Roll,roll_deg,deg,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Aircraft Roll Attitude
+LatAc,unmapped_latac,G,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+NormAc,unmapped_normac,G,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+HDG,unmapped_hdg,deg,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+TRK,unmapped_trk,deg,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+volt1,voltage_1,volts,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Main Electrical Bus 1 Potential
+volt2,voltage_2,volts,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Essential Electrical Bus 2 Potential
+amp1,current_1,amps,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Alternator 1 Current
+FQtyL,fuel_qty_l,gals (to L),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Left Fuel Tank Quantity
+FQtyR,fuel_qty_r,gals (to L),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Right Fuel Tank Quantity
+E1 FFlow,fuel_flow,GPH (to L/h),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Fuel flow transducer measurement
+E1 OilT,oil_temp_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Oil sump temperature
+E1 OilP,oil_pressure_kpa,psi (to kPa),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Oil gallery lubrication pressure
+E1 MAP,map_kpa,inHg (to kPa),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Manifold Absolute Pressure
+E1 RPM,rpm,RPM,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Engine crankshaft rotational speed
+E1 %Pwr,unmapped_e1_pctpwr,%,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+E1 CHT1,cht_1_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 1 Head Temperature
+E1 CHT2,cht_2_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 2 Head Temperature
+E1 CHT3,cht_3_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 3 Head Temperature
+E1 CHT4,cht_4_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 4 Head Temperature
+E1 CHT5,cht_5_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 5 Head Temperature (6-cyl variant)
+E1 CHT6,cht_6_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 6 Head Temperature (6-cyl variant)
+E1 EGT1,egt_1_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 1 Exhaust Gas Temperature
+E1 EGT2,egt_2_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 2 Exhaust Gas Temperature
+E1 EGT3,egt_3_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 3 Exhaust Gas Temperature
+E1 EGT4,egt_4_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 4 Exhaust Gas Temperature
+E1 EGT5,egt_5_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 5 Exhaust Gas Temperature (6-cyl variant)
+E1 EGT6,egt_6_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Cylinder 6 Exhaust Gas Temperature (6-cyl variant)
+E1 TIT1,tit_1_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Turbine Inlet Temperature #1 (Turbocharger)
+E1 TIT2,tit_2_c,deg F (to deg C),float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Turbine Inlet Temperature #2 (Turbocharger)
+AltGPS,unmapped_altgps,ft wgs,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+TAS,unmapped_tas,kt,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+HSIS,unmapped_hsis,enum,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+CRS,unmapped_crs,deg,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+NAV1,unmapped_nav1,MHz,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+NAV2,unmapped_nav2,MHz,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+COM1,unmapped_com1,MHz,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+COM2,unmapped_com2,MHz,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+HCDI,unmapped_hcdi,fsd,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+VCDI,unmapped_vcdi,fsd,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+WndSpd,unmapped_wndspd,kt,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+WndDr,unmapped_wnddr,deg,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+WptDst,unmapped_wptdst,nm,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+WptBrg,unmapped_wptbrg,deg,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+MagVar,unmapped_magvar,deg,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+AfcsOn,unmapped_afcson,bool,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+RollM,unmapped_rollm,enum,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+PitchM,unmapped_pitchm,enum,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+RollC,unmapped_rollc,deg,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+PichC,unmapped_pichc,deg,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+VSpdG,unmapped_vspdg,fpm,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+GPSfix,unmapped_gpsfix,enum,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+HAL,unmapped_hal,mt,float64,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+VAL,unmapped_val,mt,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+HPLwas,unmapped_hplwas,mt,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+HPLfd,unmapped_hplfd,mt,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel
+VPLwas,unmapped_vplwas,mt,object,1.0 Hz,0.036%,NGAFID Garmin G1000,Avionics flight dynamic or navigation auxiliary channel

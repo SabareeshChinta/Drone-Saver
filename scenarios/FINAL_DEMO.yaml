@@ -1,0 +1,13 @@
+scenario_id: "FINAL_DEMO"
+description: "Master End-to-End UAV Surveillance Mission: Progressive Fuel Injector Failure on Cylinder #2"
+flight_id: "FLIGHT_01"
+fault_type: "FT-02_INJECTOR_CLOGGING"
+affected_cylinder: 2
+onset_time_sec: 1000
+severity: 0.35
+duration_sec: 1200
+mission_type: "DRDO_STRATEGIC_RECONNAISSANCE"
+altitude_profile: "CLIMB_TO_FL150_LOITER"
+ambient_temperature_c: 12.0
+total_mission_duration_sec: 7200.0
+random_seed: 42

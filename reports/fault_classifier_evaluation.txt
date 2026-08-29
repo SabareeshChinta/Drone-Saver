@@ -1,0 +1,16 @@
+                                  precision    recall  f1-score   support
+
+        FT-01_SPARK_PLUG_FOULING       1.00      1.00      1.00     22907
+         FT-02_INJECTOR_CLOGGING       1.00      1.00      1.00     23907
+       FT-03_BURNT_EXHAUST_VALVE       0.97      0.86      0.91     24907
+                FT-04_DETONATION       1.00      1.00      1.00     21907
+FT-05_COOLING_BAFFLE_DEGRADATION       1.00      1.00      1.00     24407
+          FT-06_LUBRICATION_LOSS       1.00      1.00      1.00     23407
+      FT-07_INTAKE_MANIFOLD_LEAK       0.96      0.96      0.96     22407
+              FT-08_SENSOR_DRIFT       0.91      0.93      0.92     25407
+            FT-09_SENSOR_DROPOUT       1.00      1.00      1.00     20907
+                         HEALTHY       0.95      0.99      0.97     60000
+
+                        accuracy                           0.97    270163
+                       macro avg       0.98      0.97      0.98    270163
+                    weighted avg       0.97      0.97      0.97    270163

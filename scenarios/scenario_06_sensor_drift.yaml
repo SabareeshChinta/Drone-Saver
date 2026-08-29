@@ -1,0 +1,13 @@
+scenario_id: "SCENARIO_06_SENSOR_DRIFT"
+description: "Thermocouple metallurgical drift on Cylinder #3 Exhaust Temperature probe"
+flight_id: "FLIGHT_04"
+fault_type: "FT-08_SENSOR_DRIFT"
+affected_cylinder: 3
+onset_time_sec: 700
+severity: 1.0
+duration_sec: 2000
+mission_type: "PERSISTENT_ISR_MISSION"
+altitude_profile: "EXTENDED_LOITER"
+ambient_temperature_c: 10.0
+total_mission_duration_sec: 7200.0
+random_seed: 42
