@@ -3,250 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drone Saver — UAV Engine Health Digital Twin (SIH26054 DRDO)</title>
+    <title>Drone Saver — Ground Control Station (GCS)</title>
     <link rel="stylesheet" href="/static/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
-<body class="theme-dark">
-    <div class="app-container">
+<body>
+    <div class="gcs-layout">
         <!-- ========================================================= -->
-        <!-- 1. TOP HEADER & TELEMETRY STATUS BAR                      -->
+        <!-- 1. AEROSPACE GCS HEADER                                   -->
         <!-- ========================================================= -->
-        <header class="top-header">
-            <div class="brand-block">
-                <div class="brand-logo">🛡️ DRONE SAVER</div>
-                <div class="brand-sub">PHYSICS-INFORMED AI DIGITAL TWIN · SIH26054 (DRDO)</div>
+        <header class="gcs-header">
+            <div class="header-left">
+                <div class="system-callsign">DRONE SAVER // GCS-TWIN-01</div>
+                <div class="system-sub">UAV ENGINE HEALTH DIGITAL TWIN · SIH26054 DRDO</div>
             </div>
 
-            <div class="header-telemetry-stats">
-                <div class="stat-pill">
-                    <span class="pill-label">ENGINE HEALTH</span>
-                    <span class="pill-value val-health" id="top-health-val">100%</span>
+            <div class="status-strip">
+                <div class="strip-item">
+                    <span class="s-label">ENGINE HEALTH</span>
+                    <span class="s-val text-green" id="s-health">100%</span>
                 </div>
-                <div class="stat-pill">
-                    <span class="pill-label">ANOMALY SCORE</span>
-                    <span class="pill-value" id="top-anom-val">0.00</span>
+                <div class="strip-item">
+                    <span class="s-label">ANOMALY STATE</span>
+                    <span class="s-val text-muted" id="s-anom">NOMINAL</span>
                 </div>
-                <div class="stat-pill">
-                    <span class="pill-label">MISSION RISK</span>
-                    <span class="pill-value" id="top-risk-val">0%</span>
+                <div class="strip-item">
+                    <span class="s-label">MISSION RISK</span>
+                    <span class="s-val text-muted" id="s-risk">0.0%</span>
                 </div>
-                <div class="stat-pill">
-                    <span class="pill-label">LINK STATUS</span>
-                    <span class="pill-value badge-green" id="top-link-status">ONLINE (1.0 Hz)</span>
+                <div class="strip-item">
+                    <span class="s-label">TELEMETRY LINK</span>
+                    <span class="s-val text-green" id="s-link">ONLINE (1.0 Hz)</span>
                 </div>
-                <div class="stat-pill">
-                    <span class="pill-label">INFERENCE</span>
-                    <span class="pill-value" id="top-latency-val">65 ms</span>
+                <div class="strip-item">
+                    <span class="s-label">LATENCY</span>
+                    <span class="s-val text-muted" id="s-latency">65 ms</span>
+                </div>
+                <div class="strip-item provenance-tag">
+                    <span class="s-label">DATA PROVENANCE</span>
+                    <span class="s-val text-cyan" id="s-provenance">REAL NGAFID G1000</span>
                 </div>
             </div>
 
-            <div class="view-mode-toggle">
-                <button class="btn-toggle active" id="btn-mode-judge" onclick="setMode('judge')">⚖️ JUDGE VIEW</button>
-                <button class="btn-toggle" id="btn-mode-eng" onclick="setMode('eng')">⚙️ ENGINEERING VIEW</button>
-            </div>
+            <!-- GCS Navigation Tabs -->
+            <nav class="gcs-nav">
+                <button class="nav-tab active" onclick="switchTab('cockpit')">COCKPIT</button>
+                <button class="nav-tab" onclick="switchTab('twin')">DIGITAL TWIN</button>
+                <button class="nav-tab" onclick="switchTab('mission')">MISSION</button>
+                <button class="nav-tab" onclick="switchTab('telemetry')">SYSTEM / LINK</button>
+            </nav>
         </header>
 
         <!-- ========================================================= -->
-        <!-- 2. MASTER AUTOPILOT DIRECTIVE BANNER                      -->
+        <!-- 2. MASTER DIRECTIVE STRIP                                 -->
         <!-- ========================================================= -->
-        <div class="directive-banner banner-green" id="directive-banner">
-            <div class="directive-icon" id="directive-icon">🟢</div>
-            <div class="directive-content">
-                <div class="directive-title" id="directive-title">CONTINUE MISSION</div>
-                <div class="directive-desc" id="directive-desc">Powertrain within nominal thermal and hydraulic envelope. No action required.</div>
+        <div class="directive-box dir-green" id="gcs-directive-box">
+            <div class="dir-badge" id="dir-badge-text">STATUS: NORMAL</div>
+            <div class="dir-main">
+                <div class="dir-title" id="dir-title-text">CONTINUE MISSION</div>
+                <div class="dir-reason" id="dir-reason-text">All engine cylinder thermals, oil pressure, and fuel hydraulics within nominal physical envelope.</div>
             </div>
-            <div class="directive-meta">
-                <div class="meta-label">FAILSAFE STATE</div>
-                <div class="meta-val" id="failsafe-state-text">HEALTHY</div>
+            <div class="dir-state-pill">
+                <span class="pill-lbl">FAILSAFE STATE</span>
+                <span class="pill-val" id="dir-state-name">HEALTHY</span>
             </div>
         </div>
 
         <!-- ========================================================= -->
-        <!-- 3. MAIN DASHBOARD GRID                                    -->
+        <!-- 3. TAB 1: PRIMARY COCKPIT / GCS OVERVIEW                  -->
         <!-- ========================================================= -->
-        <main class="dashboard-grid">
-            
-            <!-- PANEL A: LIVE ENGINE TELEMETRY -->
-            <section class="card panel-telemetry">
-                <div class="card-header">
-                    <h3>📡 LIVE ENGINE TELEMETRY</h3>
-                    <span class="card-tag" id="telemetry-provenance">REAL NGAFID G1000</span>
-                </div>
-                <div class="telemetry-grid">
-                    <div class="tele-item"><span class="lbl">RPM</span><span class="val" id="tel-rpm">2450</span><span class="unit">RPM</span></div>
-                    <div class="tele-item"><span class="lbl">MANIFOLD PRESS</span><span class="val" id="tel-map">85.2</span><span class="unit">kPa</span></div>
-                    <div class="tele-item"><span class="lbl">FUEL FLOW</span><span class="val" id="tel-fuel">42.1</span><span class="unit">L/h</span></div>
-                    <div class="tele-item"><span class="lbl">OIL PRESSURE</span><span class="val" id="tel-oil-p">465</span><span class="unit">kPa</span></div>
-                    <div class="tele-item"><span class="lbl">OIL TEMP</span><span class="val" id="tel-oil-t">82.4</span><span class="unit">°C</span></div>
-                    <div class="tele-item"><span class="lbl">ALTITUDE</span><span class="val" id="tel-alt">18,400</span><span class="unit">ft</span></div>
-                    <div class="tele-item"><span class="lbl">AIRSPEED</span><span class="val" id="tel-ias">118</span><span class="unit">kt</span></div>
-                    <div class="tele-item"><span class="lbl">OAT</span><span class="val" id="tel-oat">14.5</span><span class="unit">°C</span></div>
-                    <div class="tele-item"><span class="lbl">THROTTLE</span><span class="val" id="tel-thr">78</span><span class="unit">%</span></div>
-                </div>
-            </section>
+        <main class="gcs-content active" id="tab-cockpit">
+            <div class="cockpit-grid">
+                
+                <!-- COLUMN 1: ENGINE TELEMETRY -->
+                <section class="gcs-panel panel-telemetry">
+                    <div class="panel-header">
+                        <span class="p-title">ENGINE TELEMETRY</span>
+                        <span class="p-sub">MEASURED SENSORS</span>
+                    </div>
+                    <table class="tele-table">
+                        <tbody>
+                            <tr><td class="t-name">ENGINE SPEED</td><td class="t-val" id="t-rpm">2,450</td><td class="t-unit">RPM</td><td class="t-trend" id="tr-rpm">→</td></tr>
+                            <tr><td class="t-name">MANIFOLD PRESS</td><td class="t-val" id="t-map">85.2</td><td class="t-unit">kPa</td><td class="t-trend" id="tr-map">→</td></tr>
+                            <tr><td class="t-name">FUEL CONSUMPTION</td><td class="t-val" id="t-fuel">42.1</td><td class="t-unit">L/h</td><td class="t-trend" id="tr-fuel">→</td></tr>
+                            <tr><td class="t-name">OIL PRESSURE</td><td class="t-val" id="t-oil-p">465</td><td class="t-unit">kPa</td><td class="t-trend" id="tr-oil-p">→</td></tr>
+                            <tr><td class="t-name">OIL TEMPERATURE</td><td class="t-val" id="t-oil-t">82.4</td><td class="t-unit">°C</td><td class="t-trend" id="tr-oil-t">→</td></tr>
+                            <tr><td class="t-name">PRESSURE ALTITUDE</td><td class="t-val" id="t-alt">18,400</td><td class="t-unit">ft</td><td class="t-trend" id="tr-alt">→</td></tr>
+                            <tr><td class="t-name">INDICATED AIRSPEED</td><td class="t-val" id="t-ias">118</td><td class="t-unit">kt</td><td class="t-trend" id="tr-ias">→</td></tr>
+                            <tr><td class="t-name">OUTSIDE AIR TEMP</td><td class="t-val" id="t-oat">14.5</td><td class="t-unit">°C</td><td class="t-trend">→</td></tr>
+                            <tr><td class="t-name">COMMANDED THROTTLE</td><td class="t-val" id="t-thr">78</td><td class="t-unit">%</td><td class="t-trend">→</td></tr>
+                        </tbody>
+                    </table>
+                </section>
 
-            <!-- PANEL B: 4-CYLINDER THERMAL HEAD HEALTH -->
-            <section class="card panel-cylinders">
-                <div class="card-header">
-                    <h3>🔥 4-CYLINDER THERMAL HEALTH</h3>
-                    <span class="card-tag">CONTINUOUS RESIDUALS</span>
-                </div>
-                <div class="cylinders-layout">
-                    <!-- Cyl 1 -->
-                    <div class="cyl-box" id="cyl-box-1">
-                        <div class="cyl-title">CYLINDER #1</div>
-                        <div class="cyl-badge badge-green" id="cyl-badge-1">NORMAL</div>
-                        <div class="cyl-metrics">
-                            <div class="cm"><span class="c-lbl">EGT</span><span class="c-val" id="cyl-egt-1">760°C</span></div>
-                            <div class="cm"><span class="c-lbl">CHT</span><span class="c-val" id="cyl-cht-1">155°C</span></div>
-                            <div class="cm"><span class="c-lbl">ΔEGT</span><span class="c-val" id="cyl-dev-1">+1.2°C</span></div>
-                        </div>
+                <!-- COLUMN 2: 4-CYLINDER MONITOR & DIGITAL TWIN -->
+                <section class="gcs-panel panel-center">
+                    <div class="panel-header">
+                        <span class="p-title">CYLINDER THERMAL HEAD & RESIDUALS</span>
+                        <span class="p-sub">4-NODE THERMOFLUID ARRAY</span>
                     </div>
-                    <!-- Cyl 2 -->
-                    <div class="cyl-box" id="cyl-box-2">
-                        <div class="cyl-title">CYLINDER #2</div>
-                        <div class="cyl-badge badge-green" id="cyl-badge-2">NORMAL</div>
-                        <div class="cyl-metrics">
-                            <div class="cm"><span class="c-lbl">EGT</span><span class="c-val" id="cyl-egt-2">762°C</span></div>
-                            <div class="cm"><span class="c-lbl">CHT</span><span class="c-val" id="cyl-cht-2">156°C</span></div>
-                            <div class="cm"><span class="c-lbl">ΔEGT</span><span class="c-val" id="cyl-dev-2">+2.1°C</span></div>
-                        </div>
-                    </div>
-                    <!-- Cyl 3 -->
-                    <div class="cyl-box" id="cyl-box-3">
-                        <div class="cyl-title">CYLINDER #3</div>
-                        <div class="cyl-badge badge-green" id="cyl-badge-3">NORMAL</div>
-                        <div class="cyl-metrics">
-                            <div class="cm"><span class="c-lbl">EGT</span><span class="c-val" id="cyl-egt-3">758°C</span></div>
-                            <div class="cm"><span class="c-lbl">CHT</span><span class="c-val" id="cyl-cht-3">154°C</span></div>
-                            <div class="cm"><span class="c-lbl">ΔEGT</span><span class="c-val" id="cyl-dev-3">-1.5°C</span></div>
-                        </div>
-                    </div>
-                    <!-- Cyl 4 -->
-                    <div class="cyl-box" id="cyl-box-4">
-                        <div class="cyl-title">CYLINDER #4</div>
-                        <div class="cyl-badge badge-green" id="cyl-badge-4">NORMAL</div>
-                        <div class="cyl-metrics">
-                            <div class="cm"><span class="c-lbl">EGT</span><span class="c-val" id="cyl-egt-4">764°C</span></div>
-                            <div class="cm"><span class="c-lbl">CHT</span><span class="c-val" id="cyl-cht-4">158°C</span></div>
-                            <div class="cm"><span class="c-lbl">ΔEGT</span><span class="c-val" id="cyl-dev-4">+3.2°C</span></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
-            <!-- PANEL C: AI DIAGNOSTICS & PHYSICAL EVIDENCE -->
-            <section class="card panel-ai">
-                <div class="card-header">
-                    <h3>🧠 AI DIAGNOSTIC ENGINE</h3>
-                    <span class="card-tag badge-cyan">STAGE 1 & 2 CLASSIFIER</span>
-                </div>
-                <div class="ai-body">
-                    <div class="diag-primary">
-                        <div class="diag-fault-name" id="diag-fault-name">NOMINAL / HEALTHY ENGINE</div>
-                        <div class="diag-meta-row">
-                            <span>AFFECTED COMPONENT: <strong id="diag-cyl">GLOBAL ENGINE</strong></span>
-                            <span>CONFIDENCE: <strong id="diag-conf">98.5%</strong></span>
+                    <!-- 4 Cylinders Flat Grid -->
+                    <div class="cyl-array">
+                        <div class="cyl-card" id="cyl-card-1">
+                            <div class="cc-hdr"><span>CYL 1</span><span class="cc-badge badge-normal" id="cb-1">NORMAL</span></div>
+                            <div class="cc-row"><span class="cc-lbl">EGT</span><span class="cc-val" id="c1-egt">760 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">CHT</span><span class="cc-val" id="c1-cht">155 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">ΔEGT</span><span class="cc-val" id="c1-dev">+1.2 °C</span></div>
+                        </div>
+
+                        <div class="cyl-card" id="cyl-card-2">
+                            <div class="cc-hdr"><span>CYL 2</span><span class="cc-badge badge-normal" id="cb-2">NORMAL</span></div>
+                            <div class="cc-row"><span class="cc-lbl">EGT</span><span class="cc-val" id="c2-egt">762 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">CHT</span><span class="cc-val" id="c2-cht">156 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">ΔEGT</span><span class="cc-val" id="c2-dev">+2.1 °C</span></div>
+                        </div>
+
+                        <div class="cyl-card" id="cyl-card-3">
+                            <div class="cc-hdr"><span>CYL 3</span><span class="cc-badge badge-normal" id="cb-3">NORMAL</span></div>
+                            <div class="cc-row"><span class="cc-lbl">EGT</span><span class="cc-val" id="c3-egt">758 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">CHT</span><span class="cc-val" id="c3-cht">154 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">ΔEGT</span><span class="cc-val" id="c3-dev">-1.5 °C</span></div>
+                        </div>
+
+                        <div class="cyl-card" id="cyl-card-4">
+                            <div class="cc-hdr"><span>CYL 4</span><span class="cc-badge badge-normal" id="cb-4">NORMAL</span></div>
+                            <div class="cc-row"><span class="cc-lbl">EGT</span><span class="cc-val" id="c4-egt">764 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">CHT</span><span class="cc-val" id="c4-cht">158 °C</span></div>
+                            <div class="cc-row"><span class="cc-lbl">ΔEGT</span><span class="cc-val" id="c4-dev">+3.2 °C</span></div>
                         </div>
                     </div>
 
-                    <div class="evidence-list">
-                        <div class="ev-item">
-                            <div class="ev-header"><span>Cross-Cylinder EGT Asymmetry</span><span id="ev-egt-val">0.0°C</span></div>
-                            <div class="progress-bar"><div class="fill fill-blue" id="ev-egt-bar" style="width: 10%"></div></div>
+                    <!-- Digital Twin Chart Centerpiece -->
+                    <div class="twin-chart-box">
+                        <div class="chart-header-row">
+                            <span class="chart-title">PHYSICS BASELINE vs OBSERVED EGT (CYL 2)</span>
+                            <div class="chart-legend-row">
+                                <span class="leg-item"><span class="leg-dot color-orange"></span> OBSERVED</span>
+                                <span class="leg-item"><span class="leg-dash color-blue"></span> BASELINE</span>
+                            </div>
                         </div>
-                        <div class="ev-item">
-                            <div class="ev-header"><span>Cylinder Head Temperature Spread</span><span id="ev-cht-val">0.0°C</span></div>
-                            <div class="progress-bar"><div class="fill fill-yellow" id="ev-cht-bar" style="width: 8%"></div></div>
-                        </div>
-                        <div class="ev-item">
-                            <div class="ev-header"><span>Hydraulic Oil Pressure Residual</span><span id="ev-oil-val">0.0 kPa</span></div>
-                            <div class="progress-bar"><div class="fill fill-green" id="ev-oil-bar" style="width: 5%"></div></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- PANEL D: SCENARIO RUL & MISSION RISK -->
-            <section class="card panel-rul">
-                <div class="card-header">
-                    <h3>⏳ SCENARIO TIME-TO-CRITICAL</h3>
-                    <span class="card-tag badge-orange">STAGE 3 & 4 RISK</span>
-                </div>
-                <div class="rul-body">
-                    <div class="rul-main">
-                        <div class="rul-val" id="rul-minutes-val">-- min</div>
-                        <div class="rul-sub" id="rul-bounds-val">90% CI: [-- to -- min]</div>
-                        <div class="rul-disclaimer">⚠️ Scenario time remaining before reaching redline threshold. Not material fatigue life.</div>
-                    </div>
-                    <div class="mission-risk-stats">
-                        <div class="mr-item">
-                            <span class="mr-lbl">MISSION SUCCESS PROBABILITY</span>
-                            <span class="mr-val" id="mr-p-succ">1.00</span>
-                        </div>
-                        <div class="mr-item">
-                            <span class="mr-lbl">SAFE RTB SURVIVAL PROBABILITY</span>
-                            <span class="mr-val" id="mr-p-rtb">1.00</span>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="cockpitTwinChart"></canvas>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- PANEL E: DIGITAL TWIN PHYSICS BASELINE VS OBSERVED -->
-            <section class="card panel-chart-twin" id="eng-chart-panel">
-                <div class="card-header">
-                    <h3>📊 DIGITAL TWIN BASELINE VS OBSERVED RESIDUALS</h3>
-                    <span class="card-tag">FIRST-PRINCIPLES THERMODYNAMICS</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="twinChart"></canvas>
-                </div>
-            </section>
+                <!-- COLUMN 3: FACTUAL DIAGNOSTICS & EVIDENCE -->
+                <section class="gcs-panel panel-diagnostics">
+                    <div class="panel-header">
+                        <span class="p-title">FAULT DIAGNOSIS & EVIDENCE</span>
+                        <span class="p-sub">STAGE 2 GBDT CLASSIFIER</span>
+                    </div>
 
-            <!-- PANEL F: CAUSAL HEALTH TRAJECTORY -->
-            <section class="card panel-chart-health">
-                <div class="card-header">
-                    <h3>📉 CAUSAL ENGINE HEALTH TRAJECTORY H(t)</h3>
-                    <span class="card-tag">STATE-SPACE ASYMMETRIC FILTER</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="healthChart"></canvas>
-                </div>
-            </section>
+                    <div class="diag-detail-box">
+                        <div class="d-row"><span class="d-lbl">DIAGNOSED FAULT</span><span class="d-val" id="diag-fault-name">NOMINAL / HEALTHY</span></div>
+                        <div class="d-row"><span class="d-lbl">AFFECTED COMPONENT</span><span class="d-val" id="diag-aff-cyl">GLOBAL ENGINE</span></div>
+                        <div class="d-row"><span class="d-lbl">CLASSIFICATION CONFIDENCE</span><span class="d-val" id="diag-prob-pct">98.5%</span></div>
+                        <div class="d-row"><span class="d-lbl">SEVERITY LEVEL</span><span class="d-val" id="diag-sev-level">NOMINAL</span></div>
+                    </div>
 
+                    <div class="evidence-section">
+                        <div class="ev-title">PHYSICAL EVIDENCE & INDICATORS</div>
+                        <div class="ev-list" id="ev-container">
+                            <!-- Dynamic evidence items -->
+                        </div>
+                    </div>
+
+                    <div class="event-log-container">
+                        <div class="ev-title">CHRONOLOGICAL EVENT LOG</div>
+                        <div class="event-log-list" id="event-log-box">
+                            <!-- Streamed events -->
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- BOTTOM COCKPIT ROW: RUL & HEALTH TRAJECTORY -->
+            <div class="bottom-cockpit-grid">
+                
+                <!-- SCENARIO RUL -->
+                <div class="gcs-panel panel-rul-mini">
+                    <div class="panel-header">
+                        <span class="p-title">SCENARIO TIME-TO-CRITICAL</span>
+                        <span class="p-sub">STAGE 3 QUANTILE REGRESSION</span>
+                    </div>
+                    <div class="rul-display-block">
+                        <div class="rul-primary-val" id="rul-main-min">-- min</div>
+                        <div class="rul-ci-val" id="rul-ci-bounds">90% INTERVAL: [-- to -- min]</div>
+                        <div class="rul-note">Note: Projected time remaining before reaching redline threshold. Not material fatigue life.</div>
+                    </div>
+                </div>
+
+                <!-- HEALTH TRAJECTORY CHART -->
+                <div class="gcs-panel panel-health-mini">
+                    <div class="panel-header">
+                        <span class="p-title">ENGINE HEALTH TRAJECTORY H(t)</span>
+                        <span class="p-sub">CONTINUOUS STATE-SPACE DECAY FILTER</span>
+                    </div>
+                    <div class="chart-canvas-wrapper-mini">
+                        <canvas id="cockpitHealthChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- MISSION RISK STATUS -->
+                <div class="gcs-panel panel-mission-mini">
+                    <div class="panel-header">
+                        <span class="p-title">MISSION RELIABILITY CONTEXT</span>
+                        <span class="p-sub">MONTE CARLO SURVIVAL ENGINE</span>
+                    </div>
+                    <div class="mr-grid">
+                        <div class="mr-stat"><span class="mr-lbl">REMAINING MISSION</span><span class="mr-val" id="mr-rem-min">24.0 min</span></div>
+                        <div class="mr-stat"><span class="mr-lbl">MISSION SUCCESS PROB</span><span class="mr-val text-green" id="mr-succ-prob">100%</span></div>
+                        <div class="mr-stat"><span class="mr-lbl">SAFE RTB PROBABILITY</span><span class="mr-val text-green" id="mr-rtb-prob">100%</span></div>
+                        <div class="mr-stat"><span class="mr-lbl">CURRENT DIRECTIVE</span><span class="mr-val text-cyan" id="mr-curr-dir">CONTINUE</span></div>
+                    </div>
+                </div>
+
+            </div>
         </main>
 
         <!-- ========================================================= -->
-        <!-- 4. BOTTOM OPERATOR DEMO CONTROLS                          -->
+        <!-- 4. TAB 2: DIGITAL TWIN & RESIDUALS VIEW                   -->
         <!-- ========================================================= -->
-        <footer class="bottom-controller">
-            <div class="ctrl-group main-action">
-                <button class="btn btn-primary" id="btn-master-demo" onclick="triggerScenario('scenarios/FINAL_SIH_DEMO.yaml')">
+        <main class="gcs-content" id="tab-twin">
+            <div class="twin-full-grid">
+                <section class="gcs-panel">
+                    <div class="panel-header"><span class="p-title">EGT RESIDUAL CHANNELS r_egt(t)</span><span class="p-sub">Observed minus Baseline (°C)</span></div>
+                    <div class="chart-canvas-wrapper-large"><canvas id="egtResidualChart"></canvas></div>
+                </section>
+                <section class="gcs-panel">
+                    <div class="panel-header"><span class="p-title">CHT RESIDUAL CHANNELS r_cht(t)</span><span class="p-sub">Observed minus Baseline (°C)</span></div>
+                    <div class="chart-canvas-wrapper-large"><canvas id="chtResidualChart"></canvas></div>
+                </section>
+            </div>
+        </main>
+
+        <!-- ========================================================= -->
+        <!-- 5. TAB 3: MISSION CONTEXT VIEW                            -->
+        <!-- ========================================================= -->
+        <main class="gcs-content" id="tab-mission">
+            <div class="mission-full-grid">
+                <section class="gcs-panel">
+                    <div class="panel-header"><span class="p-title">2D TACTICAL FLIGHT TRACK & LOITER WAYPOINT</span><span class="p-sub">LAT/LON RECONSTRUCTED FLIGHT PATH</span></div>
+                    <div class="mission-map-placeholder">
+                        <canvas id="missionTrackCanvas"></canvas>
+                    </div>
+                </section>
+                <section class="gcs-panel">
+                    <div class="panel-header"><span class="p-title">ALTITUDE & AIRSPEED REGIME TIMELINE</span><span class="p-sub">FLIGHT ENVELOPE AUDIT</span></div>
+                    <div class="chart-canvas-wrapper-large"><canvas id="flightRegimeChart"></canvas></div>
+                </section>
+            </div>
+        </main>
+
+        <!-- ========================================================= -->
+        <!-- 6. TAB 4: SYSTEM & TELEMETRY LINK VIEW                    -->
+        <!-- ========================================================= -->
+        <main class="gcs-content" id="tab-telemetry">
+            <div class="system-full-grid">
+                <section class="gcs-panel">
+                    <div class="panel-header"><span class="p-title">INGESTION & SENSOR RELIABILITY AUDIT</span><span class="p-sub">1.0 Hz VALIDATION METRICS</span></div>
+                    <table class="tele-table">
+                        <tbody>
+                            <tr><td>TOTAL PACKETS INGESTED</td><td id="sys-pkts" class="t-val">0</td></tr>
+                            <tr><td>TELEMETRY PACKET LOSS</td><td id="sys-loss" class="t-val">0.0%</td></tr>
+                            <tr><td>END-TO-END INFERENCE LATENCY</td><td id="sys-lat" class="t-val">65.0 ms</td></tr>
+                            <tr><td>STAGE 1 (ANOMALY DETECTOR) LATENCY</td><td id="sys-lat-anom" class="t-val">10.5 ms</td></tr>
+                            <tr><td>STAGE 2 (FAULT CLASSIFIER) LATENCY</td><td id="sys-lat-clf" class="t-val">41.8 ms</td></tr>
+                            <tr><td>STAGE 3 (RUL ESTIMATOR) LATENCY</td><td id="sys-lat-rul" class="t-val">11.2 ms</td></tr>
+                            <tr><td>STAGE 4 (MISSION RISK FSM) LATENCY</td><td id="sys-lat-risk" class="t-val">2.8 ms</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section class="gcs-panel">
+                    <div class="panel-header"><span class="p-title">RAW TELEMETRY JSON PACKET STREAM</span><span class="p-sub">CANONICAL API CONTRACT</span></div>
+                    <pre class="json-stream-box" id="sys-json-stream">// Ingesting packet...</pre>
+                </section>
+            </div>
+        </main>
+
+        <!-- ========================================================= -->
+        <!-- 7. BOTTOM DEMO & SCENARIO CONTROL BAR                     -->
+        <!-- ========================================================= -->
+        <footer class="gcs-footer">
+            <div class="ctrl-left">
+                <button class="gcs-btn btn-sih-master" onclick="triggerScenario('scenarios/FINAL_SIH_DEMO.yaml')">
                     ▶ RUN FINAL SIH DEMO
                 </button>
             </div>
 
-            <div class="ctrl-group scenario-actions">
-                <span class="ctrl-label">INJECT FAULT:</span>
-                <button class="btn btn-ctrl" onclick="triggerScenario('scenarios/live_demo/DEMO-01_healthy.yaml')">HEALTHY</button>
-                <button class="btn btn-ctrl" onclick="triggerScenario('scenarios/live_demo/DEMO-02_injector_clogging.yaml')">INJECTOR CLOG (CYL 2)</button>
-                <button class="btn btn-ctrl" onclick="triggerScenario('scenarios/live_demo/DEMO-03_cooling_degradation.yaml')">COOLING BAFFLE (CYL 4)</button>
-                <button class="btn btn-ctrl" onclick="triggerScenario('scenarios/live_demo/DEMO-04_lubrication_failure.yaml')">LUBRICATION LOSS</button>
-                <button class="btn btn-ctrl" onclick="triggerScenario('scenarios/live_demo/DEMO-05_sensor_dropout.yaml')">SENSOR DROPOUT</button>
-                <button class="btn btn-ctrl" onclick="triggerScenario('scenarios/live_demo/DEMO-06_compound_failure.yaml')">COMPOUND FAULT</button>
-                <button class="btn btn-ctrl btn-reset" onclick="resetDemo()">↺ RESET</button>
+            <div class="ctrl-center">
+                <span class="bar-lbl">SCENARIO:</span>
+                <button class="gcs-btn" onclick="triggerScenario('scenarios/live_demo/DEMO-01_healthy.yaml')">HEALTHY</button>
+                <button class="gcs-btn" onclick="triggerScenario('scenarios/live_demo/DEMO-02_injector_clogging.yaml')">INJECTOR CLOG</button>
+                <button class="gcs-btn" onclick="triggerScenario('scenarios/live_demo/DEMO-03_cooling_degradation.yaml')">COOLING LOSS</button>
+                <button class="gcs-btn" onclick="triggerScenario('scenarios/live_demo/DEMO-04_lubrication_failure.yaml')">OIL FAILURE</button>
+                <button class="gcs-btn" onclick="triggerScenario('scenarios/live_demo/DEMO-05_sensor_dropout.yaml')">SENSOR DROPOUT</button>
+                <button class="gcs-btn" onclick="triggerScenario('scenarios/live_demo/DEMO-06_compound_failure.yaml')">COMPOUND FAULT</button>
+                <button class="gcs-btn btn-reset" onclick="resetDemo()">↺ RESET</button>
             </div>
 
-            <div class="ctrl-group speed-controls">
-                <span class="ctrl-label">SPEED:</span>
-                <button class="btn btn-speed" onclick="setSpeed(0.5)">0.5x</button>
-                <button class="btn btn-speed active" id="spd-1" onclick="setSpeed(1.0)">1.0x</button>
-                <button class="btn btn-speed" id="spd-2" onclick="setSpeed(2.0)">2.0x</button>
-                <button class="btn btn-speed" id="spd-5" onclick="setSpeed(5.0)">5.0x</button>
-                <button class="btn btn-speed" id="spd-10" onclick="setSpeed(10.0)">10x</button>
+            <div class="ctrl-right">
+                <span class="bar-lbl">SPEED:</span>
+                <button class="gcs-btn btn-spd" onclick="setSpeed(0.5)">0.5x</button>
+                <button class="gcs-btn btn-spd active" id="spd-1" onclick="setSpeed(1.0)">1.0x</button>
+                <button class="gcs-btn btn-spd" id="spd-2" onclick="setSpeed(2.0)">2.0x</button>
+                <button class="gcs-btn btn-spd" id="spd-5" onclick="setSpeed(5.0)">5.0x</button>
+                <button class="gcs-btn btn-spd" id="spd-10" onclick="setSpeed(10.0)">10x</button>
+                <button class="gcs-btn" onclick="togglePause()">⏸ PAUSE</button>
             </div>
         </footer>
+
     </div>
 
     <script src="/static/app.js"></script>

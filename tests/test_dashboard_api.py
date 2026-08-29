@@ -27,7 +27,12 @@ class TestDashboardAPI(unittest.TestCase):
         data = response.json()
         self.assertIn("state", data)
         self.assertIn("telemetry", data)
-        self.assertIn("control", data)
+        self.assertIn("system", data)
+        self.assertIn("cylinders", data)
+        self.assertIn("diagnostics", data)
+        self.assertIn("scenario_rul", data)
+        self.assertIn("mission_risk", data)
+        self.assertIn("events", data)
         self.assertIn("engine_health", data["state"])
         self.assertIn("failsafe_state", data["state"])
 
