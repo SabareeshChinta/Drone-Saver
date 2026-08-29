@@ -1,0 +1,14 @@
+scenario_id: "FINAL_SIH_DEMO"
+description: "Master SIH 2026 Grand Finale Demo: 0-60s Healthy Flight -> 60s Progressive Injector Failure (Cyl #2) -> 72s Anomaly -> 180s Isolation -> 300s Autonomous RTB"
+flight_id: "FLIGHT_01"
+fault_type: "FT-02_INJECTOR_CLOGGING"
+affected_cylinder: 2
+onset_time_sec: 60
+severity: 0.38
+duration_sec: 750
+mission_type: "MALE_UAV_ISR_MISSION"
+altitude_profile: "BORDER_PATROL_FL140"
+ambient_temperature_c: 15.0
+total_mission_duration_sec: 7200.0
+random_seed: 42
+data_provenance: "REAL_NGAFID_TELEMETRY_WITH_PHYSICS_INJECTED_FAULT"

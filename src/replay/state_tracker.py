@@ -97,6 +97,11 @@ class StreamingStateTracker:
             'dcht_dt_cyl2_cps': dcht_dt[1],
             'dcht_dt_cyl3_cps': dcht_dt[2],
             'dcht_dt_cyl4_cps': dcht_dt[3],
-            'health_state_h': self.current_health
         }
+        features['health_state_h'] = self.current_health
         return features
+
+    def reset(self):
+        self.history.clear()
+        self.prev_raw = None
+        self.current_health = 1.0
