@@ -339,6 +339,7 @@ body {
 .leg-dash { width: 10px; height: 2px; display: inline-block; }
 .color-orange { background: var(--c-orange); }
 .color-blue { background: var(--c-cyan); }
+.color-red { background: var(--c-red); }
 
 .chart-canvas-wrapper {
     position: relative;
@@ -387,13 +388,38 @@ body {
 
 .ev-row {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     font-family: var(--font-mono);
     font-size: 0.65rem;
     background: var(--bg-main);
-    padding: 2px 6px;
+    padding: 3px 6px;
     border-radius: 2px;
+    border: 1px solid var(--border-subtle);
 }
+
+.ev-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.ev-bar {
+    height: 4px;
+    background: #1e293b;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.ev-bar-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.fill-green { background: var(--c-green); }
+.fill-yellow { background: var(--c-yellow); }
+.fill-red { background: var(--c-red); }
 
 .ev-level-high { color: var(--c-red); font-weight: 800; }
 .ev-level-mod { color: var(--c-yellow); }

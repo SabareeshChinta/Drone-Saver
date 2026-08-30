@@ -31,7 +31,8 @@ function initAllCharts() {
             labels: [],
             datasets: [
                 { label: 'OBSERVED EGT (CYL 2)', borderColor: '#f97316', borderWidth: 2, data: [], pointRadius: 0, tension: 0.1 },
-                { label: 'BASELINE EGT (CYL 2)', borderColor: '#38bdf8', borderDash: [4, 4], borderWidth: 1.5, data: [], pointRadius: 0, tension: 0.1 }
+                { label: 'BASELINE EGT (CYL 2)', borderColor: '#38bdf8', borderDash: [4, 4], borderWidth: 1.5, data: [], pointRadius: 0, tension: 0.1 },
+                { label: 'REDLINE THRESHOLD (810°C)', borderColor: '#ef4444', borderDash: [2, 4], borderWidth: 1.2, data: [], pointRadius: 0, tension: 0 }
             ]
         },
         options: {
@@ -290,7 +291,18 @@ function updateGCSState(data) {
         const row = document.createElement('div');
         row.className = 'ev-row';
         const lvlClass = ev.level === 'HIGH' ? 'ev-level-high' : (ev.level === 'MODERATE' ? 'ev-level-mod' : 'ev-level-norm');
-        row.innerHTML = `<span>${ev.name}</span><span class="${lvlClass}">${ev.value} (${ev.level})</span>`;
+        const fillClass = ev.level === 'HIGH' ? 'fill-red' : (ev.level === 'MODERATE' ? 'fill-yellow' : 'fill-green');
+        const pct = ev.level === 'HIGH' ? 88 : (ev.level === 'MODERATE' ? 52 : 18);
+        
+        row.innerHTML = `
+            <div class="ev-header-row">
+                <span>${ev.name}</span>
+                <span class="${lvlClass}">${ev.value} (${ev.level})</span>
+            </div>
+            <div class="ev-bar">
+                <div class="ev-bar-fill ${fillClass}" style="width: ${pct}%"></div>
+            </div>
+        `;
         evContainer.appendChild(row);
     });
 
@@ -329,16 +341,18 @@ function updateGCSState(data) {
 function updateCharts(state, tel) {
     const t = Math.round(state.time_seconds);
 
-    // Update Cockpit Twin Chart
+    // Update Cockpit Twin Chart (Observed, Baseline, Redline)
     if (cockpitTwinChart) {
         if (cockpitTwinChart.data.labels.length > 40) {
             cockpitTwinChart.data.labels.shift();
             cockpitTwinChart.data.datasets[0].data.shift();
             cockpitTwinChart.data.datasets[1].data.shift();
+            cockpitTwinChart.data.datasets[2].data.shift();
         }
         cockpitTwinChart.data.labels.push(t);
         cockpitTwinChart.data.datasets[0].data.push(tel.egt_2_c || (tel.expected_egt_2_c + (tel.residual_egt_2_c || 0)));
         cockpitTwinChart.data.datasets[1].data.push(tel.expected_egt_2_c);
+        cockpitTwinChart.data.datasets[2].data.push(810.0);
         cockpitTwinChart.update('none');
     }
 
