@@ -20,8 +20,21 @@ class EngineHealthState:
     scenario_rul_sec: float
     mission_success_probability: float
     p_rtb_safe: float
-    failsafe_state: str
-    recommendation: str
+    
+    # Decoupled Engine State, Recommendation & Human-in-the-Loop decision
+    engine_state: str                 # HEALTHY, ADVISORY, WARNING, CRITICAL
+    failsafe_state: str               # Backwards-compatible alias for engine_state
+    mission_recommendation: str       # CONTINUE_MISSION, DERATE_POWER, RETURN_TO_BASE, EMERGENCY_LANDING
+    recommendation: str               # Short command alias (e.g. CMD_NAV_RTB)
+    operator_decision: str            # MONITORING, PENDING, CONFIRMED, REJECTED
+    simulated_action: str             # NONE, SIMULATED_POWER_DERATE, SIMULATED_RTB_ACTION, SIMULATED_EMERGENCY_DIVERSION
+    
+    # End-to-End Data Provenance Metadata
+    data_origin: str                  # REAL_TELEMETRY, REAL_PLUS_INJECTED_FAULT, SIMULATION
+    source_dataset: str               # NGAFID, NASA_CMAPSS, JSBSIM_MVEM
+    source_flight_id: str             # FLIGHT_01, etc.
+    scenario_id: str                  # SIH_FLAGSHIP_DEMO, etc.
+    
     sensor_confidences: Dict[str, float]
     
     def to_dict(self) -> dict:

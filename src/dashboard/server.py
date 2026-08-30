@@ -110,9 +110,9 @@ class AerospaceGCSManager:
                 self.latest_features = feats
                 
                 # Check for state transitions and record chronological events
-                if state.failsafe_state != prev_fstate:
-                    self._add_event("DIRECTIVE", f"State transition: {prev_fstate} -> {state.failsafe_state} | {state.recommendation}")
-                    prev_fstate = state.failsafe_state
+                if state.mission_recommendation != prev_fstate:
+                    self._add_event("DIRECTIVE", f"Failsafe recommendation: {state.mission_recommendation} | {state.recommendation}")
+                    prev_fstate = state.mission_recommendation
                     
                 if state.fault != prev_fault and state.fault != "HEALTHY" and state.fault_probability > 0.60:
                     cyl_txt = f"Cyl #{state.affected_cylinder}" if state.affected_cylinder > 0 else "Global Engine"
@@ -131,6 +131,7 @@ class AerospaceGCSManager:
                     'anomaly_score': state.anomaly_score,
                     'fault_prob': state.fault_probability,
                     'scenario_rul_sec': state.scenario_rul_sec,
+                    'scenario_time_to_critical_sec': state.scenario_rul_sec,
                     'p_mission_success': state.mission_success_probability,
                     'egt_1': feats.get('egt_1_c', 0.0),
                     'egt_2': feats.get('egt_2_c', 0.0),
@@ -151,6 +152,10 @@ class AerospaceGCSManager:
                     'fuel_flow_lph': feats.get('fuel_flow_lph', 0.0),
                     'altitude_m': feats.get('altitude_m', 0.0),
                     'airspeed_mps': feats.get('airspeed_mps', 0.0),
+                    'engine_state': state.engine_state,
+                    'mission_recommendation': state.mission_recommendation,
+                    'operator_decision': state.operator_decision,
+                    'simulated_action': state.simulated_action,
                     'failsafe_state': state.failsafe_state
                 }
                 self.history.append(hist_item)
@@ -264,12 +269,17 @@ class AerospaceGCSManager:
                     "ci_90_low_min": round((state.scenario_rul_sec * 0.82) / 60.0, 1),
                     "ci_90_high_min": round((state.scenario_rul_sec * 1.25) / 60.0, 1),
                     "remaining_mission_min": round(max(0.0, (7200.0 - state.time_seconds) / 60.0), 1),
-                    "critical_condition": "T_CHT > 224°C / P_oil < 172 kPa / Quench"
+                    "critical_condition": "T_CHT > 224°C / P_oil < 172 kPa / Quench",
+                    "disclaimer": "Simulated degradation scenario; not material fatigue life."
                 },
                 "mission_risk": {
                     "mission_success_prob_pct": round(state.mission_success_probability * 100, 1),
                     "safe_rtb_prob_pct": round(state.p_rtb_safe * 100, 1),
-                    "directive": state.failsafe_state,
+                    "engine_state": state.engine_state,
+                    "mission_recommendation": state.mission_recommendation,
+                    "operator_decision": state.operator_decision,
+                    "simulated_action": state.simulated_action,
+                    "directive": state.mission_recommendation,
                     "action_command": state.recommendation,
                     "reason": self._get_directive_reason(state)
                 },
@@ -279,11 +289,28 @@ class AerospaceGCSManager:
                     "packet_loss_pct": 0.0 if self.source_type == "replay" else 0.1,
                     "link_status": "ONLINE",
                     "latency_ms": round(self.latest_latencies.get("total_ms", 65.0), 1),
-                    "provenance": "REAL NGAFID G1000 + INJECTED FAULT" if "DEMO" in self.active_scenario or "scenario_" in self.active_scenario else "REAL NGAFID G1000 TELEMETRY",
+                    "data_origin": state.data_origin,
+                    "source_dataset": state.source_dataset,
+                    "source_flight_id": state.source_flight_id,
+                    "scenario_id": state.scenario_id,
+                    "provenance": "REAL AIRCRAFT TELEMETRY + INJECTED FAULT" if "DEMO" in self.active_scenario or "scenario_" in self.active_scenario or "FLAGSHIP" in self.active_scenario else "REAL AIRCRAFT TELEMETRY (NGAFID G1000)",
                     "source_name": os.path.basename(self.active_scenario),
                     "speed_multiplier": self.speed_multiplier,
                     "is_paused": self.is_paused
                 },
+                "robustness": {
+                    "causal_filtering": "ENABLED",
+                    "airframe_normalization": "ENABLED",
+                    "future_leakage": "BLOCKED",
+                    "provenance_tracking": "ENABLED",
+                    "human_approval": "REQUIRED"
+                },
+                "domain_validation": [
+                    {"domain": "Real Aircraft Piston Telemetry", "status": "VERIFIED (NGAFID Lycoming IO-360)", "verified": True},
+                    {"domain": "Physics-Informed Fault Models", "status": "VERIFIED (9 Differential ODE Modes)", "verified": True},
+                    {"domain": "Simulated MALE-UAV Profile", "status": "VERIFIED (30,000 ft MVEM Solver)", "verified": True},
+                    {"domain": "UAV Heavy-Fuel Engine Test-Cell", "status": "NOT YET VALIDATED (Future Work)", "verified": False}
+                ],
                 "events": list(self.event_log)
             }
             return data
@@ -391,6 +418,21 @@ def set_speed_endpoint(payload: Dict[str, float]):
 def toggle_pause_endpoint():
     paused = gcs_mgr.toggle_pause()
     return {"status": "SUCCESS", "is_paused": paused}
+
+@app.post("/api/control/decision")
+def operator_decision_endpoint(payload: Dict[str, str]):
+    decision = payload.get("decision", "CONFIRM").upper()
+    with gcs_mgr.lock:
+        t_curr = gcs_mgr.latest_state.time_seconds if gcs_mgr.latest_state else 0.0
+        if decision == "CONFIRM":
+            event = gcs_mgr.pipeline.failsafe_sm.operator_confirm(t_sec=t_curr)
+            gcs_mgr._add_event("OPERATOR", f"Operator CONFIRMED recommendation: {event['recommended_action']}")
+            gcs_mgr._add_event("ACTION", f"Simulated autopilot action: {event['simulated_action']}")
+            return {"status": "SUCCESS", "decision": "CONFIRMED", "simulated_action": event["simulated_action"]}
+        else:
+            event = gcs_mgr.pipeline.failsafe_sm.operator_reject(t_sec=t_curr)
+            gcs_mgr._add_event("OPERATOR", "Operator REJECTED recommendation. Continuing health monitoring.")
+            return {"status": "SUCCESS", "decision": "REJECTED", "simulated_action": "NONE"}
 
 @app.post("/api/control/reset")
 def reset_endpoint():

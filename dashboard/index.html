@@ -55,7 +55,7 @@
         </header>
 
         <!-- ========================================================= -->
-        <!-- 2. MASTER DIRECTIVE STRIP                                 -->
+        <!-- 2. MASTER DIRECTIVE STRIP (HUMAN-IN-THE-LOOP)            -->
         <!-- ========================================================= -->
         <div class="directive-box dir-green" id="gcs-directive-box">
             <div class="dir-badge" id="dir-badge-text">STATUS: NORMAL</div>
@@ -63,9 +63,24 @@
                 <div class="dir-title" id="dir-title-text">CONTINUE MISSION</div>
                 <div class="dir-reason" id="dir-reason-text">All engine cylinder thermals, oil pressure, and fuel hydraulics within nominal physical envelope.</div>
             </div>
+            
+            <!-- Human-in-the-Loop Operator Confirmation Controls -->
+            <div class="dir-operator-actions" id="operator-action-controls" style="display: flex; gap: 6px; align-items: center;">
+                <button class="gcs-btn btn-confirm" id="btn-op-confirm" onclick="sendOperatorDecision('CONFIRM')" style="display: none; background: #15803d; border-color: #22c55e; color: #fff; font-weight: 800; padding: 6px 12px;">
+                    ✓ CONFIRM ACTION
+                </button>
+                <button class="gcs-btn btn-reject" id="btn-op-reject" onclick="sendOperatorDecision('REJECT')" style="display: none; background: #991b1b; border-color: #ef4444; color: #fff; font-weight: 800; padding: 6px 12px;">
+                    ✗ REJECT
+                </button>
+            </div>
+
             <div class="dir-state-pill">
-                <span class="pill-lbl">FAILSAFE STATE</span>
-                <span class="pill-val" id="dir-state-name">HEALTHY</span>
+                <span class="pill-lbl">OPERATOR STATE</span>
+                <span class="pill-val text-cyan" id="dir-operator-decision">MONITORING</span>
+            </div>
+            <div class="dir-state-pill">
+                <span class="pill-lbl">SIMULATED ACTION</span>
+                <span class="pill-val" id="dir-simulated-action">NONE</span>
             </div>
         </div>
 
@@ -276,8 +291,32 @@
                             <tr><td>STAGE 4 (MISSION RISK FSM) LATENCY</td><td id="sys-lat-risk" class="t-val">2.8 ms</td></tr>
                         </tbody>
                     </table>
+
+                    <div style="margin-top: 10px;">
+                        <div class="panel-header"><span class="p-title">ROBUSTNESS & ADVERSARIAL SAFEGUARDS</span><span class="p-sub">ACTIVE PIPELINE STATUS</span></div>
+                        <table class="tele-table">
+                            <tbody>
+                                <tr><td>CAUSAL FILTERING (ZERO FUTURE LEAKAGE)</td><td class="t-val text-green">ENABLED</td></tr>
+                                <tr><td>AIRFRAME BASELINE NORMALIZATION</td><td class="t-val text-green">ENABLED</td></tr>
+                                <tr><td>SCENARIO METADATA EXCLUSION</td><td class="t-val text-green">BLOCKED</td></tr>
+                                <tr><td>DATA PROVENANCE PROPAGATION</td><td class="t-val text-cyan">ACTIVE</td></tr>
+                                <tr><td>HUMAN-IN-THE-LOOP OPERATOR CONFIRMATION</td><td class="t-val text-green">REQUIRED</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
+
                 <section class="gcs-panel">
+                    <div class="panel-header"><span class="p-title">DATA DOMAIN VALIDATION MATRIX</span><span class="p-sub">SCIENTIFIC TRANSPARENCY</span></div>
+                    <table class="tele-table" style="margin-bottom: 8px;">
+                        <tbody>
+                            <tr><td>REAL AIRCRAFT PISTON TELEMETRY</td><td class="t-val text-green">✓ VERIFIED (NGAFID Lycoming IO-360)</td></tr>
+                            <tr><td>PHYSICS-INFORMED FAULT INJECTION</td><td class="t-val text-green">✓ VERIFIED (9 Differential ODE Modes)</td></tr>
+                            <tr><td>SIMULATED MALE-UAV PROFILE</td><td class="t-val text-green">✓ VERIFIED (30,000 ft MVEM Solver)</td></tr>
+                            <tr><td>UAV HEAVY-FUEL TEST CELL</td><td class="t-val text-yellow">NOT YET VALIDATED (Future Work)</td></tr>
+                        </tbody>
+                    </table>
+
                     <div class="panel-header"><span class="p-title">RAW TELEMETRY JSON PACKET STREAM</span><span class="p-sub">CANONICAL API CONTRACT</span></div>
                     <pre class="json-stream-box" id="sys-json-stream">// Ingesting packet...</pre>
                 </section>

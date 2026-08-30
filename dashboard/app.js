@@ -179,35 +179,52 @@ function updateGCSState(data) {
     document.getElementById('s-latency').innerText = `${sys.latency_ms} ms`;
     document.getElementById('s-provenance').innerText = sys.provenance || 'REAL NGAFID G1000';
 
-    // 2. Directive Box
+    // 2. Directive Box (Human-in-the-Loop)
     const dirBox = document.getElementById('gcs-directive-box');
     const dirBadge = document.getElementById('dir-badge-text');
     const dirTitle = document.getElementById('dir-title-text');
     const dirReason = document.getElementById('dir-reason-text');
-    const dirState = document.getElementById('dir-state-name');
+    const dirOpDec = document.getElementById('dir-operator-decision');
+    const dirSimAct = document.getElementById('dir-simulated-action');
+    const btnConfirm = document.getElementById('btn-op-confirm');
+    const btnReject = document.getElementById('btn-op-reject');
 
-    dirState.innerText = state.failsafe_state;
+    const opDecision = mRisk.operator_decision || state.operator_decision || 'MONITORING';
+    const simAction = mRisk.simulated_action || state.simulated_action || 'NONE';
+    const recAction = mRisk.mission_recommendation || state.mission_recommendation || 'CONTINUE_MISSION';
+
+    dirOpDec.innerText = opDecision;
+    dirSimAct.innerText = simAction;
     dirBox.className = 'directive-box';
 
-    if (state.failsafe_state === 'HEALTHY') {
+    // Show confirmation buttons only when recommendation requires human decision
+    if (opDecision === 'PENDING' && recAction !== 'CONTINUE_MISSION') {
+        if (btnConfirm) { btnConfirm.style.display = 'inline-block'; btnConfirm.innerText = `✓ CONFIRM ${recAction.replace('_', ' ')}`; }
+        if (btnReject) { btnReject.style.display = 'inline-block'; }
+    } else {
+        if (btnConfirm) btnConfirm.style.display = 'none';
+        if (btnReject) btnReject.style.display = 'none';
+    }
+
+    if (recAction === 'CONTINUE_MISSION') {
         dirBox.classList.add('dir-green');
-        dirBadge.innerText = 'STATUS: NORMAL';
+        dirBadge.innerText = 'STATUS: NOMINAL MONITORING';
         dirTitle.innerText = 'CONTINUE MISSION';
         dirReason.innerText = mRisk.reason;
-    } else if (state.failsafe_state === 'DEGRADED') {
+    } else if (recAction === 'DERATE_POWER') {
         dirBox.classList.add('dir-yellow');
-        dirBadge.innerText = 'STATUS: ADVISORY';
-        dirTitle.innerText = 'DERATE POWER / REDUCE LOITER';
+        dirBadge.innerText = 'STATUS: ADVISORY (APPROVAL REQ)';
+        dirTitle.innerText = 'RECOMMENDATION: DERATE POWER (65%)';
         dirReason.innerText = mRisk.reason;
-    } else if (state.failsafe_state === 'RTB') {
+    } else if (recAction === 'RETURN_TO_BASE') {
         dirBox.classList.add('dir-orange');
-        dirBadge.innerText = 'STATUS: WARNING (RTB)';
-        dirTitle.innerText = 'RETURN TO BASE (RTB)';
+        dirBadge.innerText = 'STATUS: WARNING (APPROVAL REQ)';
+        dirTitle.innerText = 'RECOMMENDATION: RETURN TO BASE (RTB)';
         dirReason.innerText = mRisk.reason;
     } else {
         dirBox.classList.add('dir-red');
-        dirBadge.innerText = 'STATUS: CRITICAL';
-        dirTitle.innerText = 'EMERGENCY DESCENT & RECOVERY';
+        dirBadge.innerText = 'STATUS: CRITICAL EMERGENCY';
+        dirTitle.innerText = 'RECOMMENDATION: EMERGENCY DIVERSION';
         dirReason.innerText = mRisk.reason;
     }
 
@@ -473,6 +490,19 @@ async function resetDemo() {
         resetLocalChartData();
     } catch (e) {
         console.error("Reset error:", e);
+    }
+}
+
+async function sendOperatorDecision(decision) {
+    try {
+        await fetch('/api/control/decision', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ decision: decision })
+        });
+        pollGCSState();
+    } catch (e) {
+        console.error("Operator decision error:", e);
     }
 }
 

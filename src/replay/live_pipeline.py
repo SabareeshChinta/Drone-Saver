@@ -174,7 +174,7 @@ class LiveDigitalTwinPipeline:
         
         # Failsafe State Machine Update
         mean_conf = float(np.mean(list(confidences.values())))
-        current_state, action_cmd = self.failsafe_sm.update(
+        engine_st, mission_rec, op_dec, sim_act, short_cmd = self.failsafe_sm.update(
             t_sec=t_curr,
             health_score=health_val,
             anomaly_score=anom_val,
@@ -196,6 +196,11 @@ class LiveDigitalTwinPipeline:
         except Exception:
             ts_val = float(t_curr)
             
+        data_orig = valid_packet.get('data_origin', 'REAL_PLUS_INJECTED_FAULT')
+        src_ds = valid_packet.get('source_dataset', 'NGAFID')
+        src_flt = valid_packet.get('source_flight_id', 'FLIGHT_01')
+        scen_id = valid_packet.get('scenario_id', 'SIH_FLAGSHIP_DEMO')
+
         state = EngineHealthState(
             timestamp=ts_val,
             time_seconds=float(t_curr),
@@ -207,8 +212,16 @@ class LiveDigitalTwinPipeline:
             scenario_rul_sec=round(rul_val, 1),
             mission_success_probability=round(p_mission_success, 3),
             p_rtb_safe=round(p_rtb_safe, 3),
-            failsafe_state=current_state,
-            recommendation=action_cmd,
+            engine_state=engine_st,
+            failsafe_state=engine_st,
+            mission_recommendation=mission_rec,
+            recommendation=short_cmd,
+            operator_decision=op_dec,
+            simulated_action=sim_act,
+            data_origin=data_orig,
+            source_dataset=src_ds,
+            source_flight_id=src_flt,
+            scenario_id=scen_id,
             sensor_confidences=confidences
         )
         
