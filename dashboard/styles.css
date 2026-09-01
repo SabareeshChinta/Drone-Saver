@@ -833,7 +833,7 @@ body {
     background: #080808;
     border: 1px solid #282828;
     border-radius: 6px;
-    width: 460px;
+    width: 360px;
     max-width: 92vw;
     padding: 24px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -843,20 +843,14 @@ body {
 }
 
 .auth-modal-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     border-bottom: 1px solid #1c1c1c;
-    padding-bottom: 12px;
-}
-
-.auth-shield-icon {
-    font-size: 1.8rem;
+    padding-bottom: 10px;
+    text-align: center;
 }
 
 .auth-modal-title {
     font-family: var(--font-sans);
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #f8fafc;
@@ -864,32 +858,10 @@ body {
 
 .auth-modal-sub {
     font-family: var(--font-sans);
-    font-size: 0.65rem;
+    font-size: 0.68rem;
     color: var(--text-muted);
     letter-spacing: 0.3px;
     margin-top: 2px;
-}
-
-.auth-notice-banner {
-    background: #111111;
-    border: 1px solid #222222;
-    padding: 6px 10px;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.68rem;
-    color: var(--text-dim);
-}
-
-.auth-badge-sec {
-    background: #78350f;
-    color: #fef08a;
-    font-size: 0.58rem;
-    font-weight: 800;
-    padding: 2px 6px;
-    border-radius: 2px;
-    letter-spacing: 0.4px;
 }
 
 .auth-input-group {
@@ -901,7 +873,7 @@ body {
 
 .auth-input-label {
     font-family: var(--font-sans);
-    font-size: 0.65rem;
+    font-size: 0.64rem;
     font-weight: 600;
     color: var(--text-dim);
     letter-spacing: 0.4px;
@@ -947,81 +919,38 @@ body {
     letter-spacing: 0.4px;
     width: 100%;
     transition: background 0.2s;
+    margin-top: 4px;
 }
 
 .auth-submit-btn:hover {
     background: #16a34a;
 }
 
-.auth-quick-select-box {
-    border-top: 1px solid #1c1c1c;
-    padding-top: 12px;
-}
-
-.auth-quick-title {
-    font-family: var(--font-sans);
-    font-size: 0.64rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    letter-spacing: 0.4px;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-.auth-quick-buttons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-}
-
-.auth-role-btn {
+.auth-credentials-hint {
     background: #111111;
-    border: 1px solid #242424;
-    color: #f1f5f9;
-    padding: 6px 8px;
+    border: 1px solid #222222;
+    padding: 8px 12px;
     border-radius: 3px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    cursor: pointer;
     text-align: center;
-    transition: all 0.2s;
-}
-
-.auth-role-btn:hover {
-    background: #1a1a1a;
-    border-color: #383838;
-}
-
-.role-icon {
-    font-size: 0.9rem;
-    color: var(--c-yellow);
-}
-
-.role-desc-col {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    gap: 2px;
 }
 
-.role-name {
-    font-family: var(--font-sans);
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.role-id {
-    font-family: var(--font-mono);
-    font-size: 0.55rem;
+.hint-label {
     color: var(--text-muted);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
 }
 
-.auth-footer-note {
-    text-align: center;
-    font-family: var(--font-sans);
-    font-size: 0.56rem;
-    color: #52525b;
-    letter-spacing: 0.3px;
+.hint-val {
+    color: #e2e8f0;
+    font-family: var(--font-mono);
+}
+
+.hint-val b {
+    color: var(--c-green);
 }

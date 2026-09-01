@@ -50,11 +50,8 @@ function applyAuthenticatedUser(user) {
     currentUser = user;
     hideAuthModal();
     
-    const roleElem = document.getElementById('auth-role-display');
     const callsignElem = document.getElementById('auth-callsign-display');
-    
-    if (roleElem) roleElem.innerText = user.role || 'OPERATOR';
-    if (callsignElem) callsignElem.innerText = user.callsign || 'DRDO-CMD-01';
+    if (callsignElem) callsignElem.innerText = user.username || 'admin';
 }
 
 async function handleLoginSubmit(e) {
