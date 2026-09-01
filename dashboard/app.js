@@ -7,12 +7,115 @@ let flightRegimeChart = null;
 
 let activeTab = 'cockpit';
 let eventSource = null;
+let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+    checkAuthSession();
     initAllCharts();
     initSSEConnection();
     drawMissionMapPlaceholder();
 });
+
+// =============================================================
+// 0. GCS Access Control & Operator Authentication
+// =============================================================
+function checkAuthSession() {
+    const savedUser = localStorage.getItem('drone_saver_user');
+    const savedToken = localStorage.getItem('drone_saver_token');
+    
+    if (savedUser && savedToken) {
+        try {
+            currentUser = JSON.parse(savedUser);
+            applyAuthenticatedUser(currentUser);
+            return;
+        } catch (e) {
+            localStorage.removeItem('drone_saver_user');
+            localStorage.removeItem('drone_saver_token');
+        }
+    }
+    showAuthModal();
+}
+
+function showAuthModal() {
+    const overlay = document.getElementById('auth-overlay');
+    if (overlay) overlay.style.display = 'flex';
+}
+
+function hideAuthModal() {
+    const overlay = document.getElementById('auth-overlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+function applyAuthenticatedUser(user) {
+    currentUser = user;
+    hideAuthModal();
+    
+    const roleElem = document.getElementById('auth-role-display');
+    const callsignElem = document.getElementById('auth-callsign-display');
+    
+    if (roleElem) roleElem.innerText = user.role || 'OPERATOR';
+    if (callsignElem) callsignElem.innerText = user.callsign || 'DRDO-CMD-01';
+}
+
+async function handleLoginSubmit(e) {
+    if (e) e.preventDefault();
+    const uInput = document.getElementById('auth-username');
+    const pInput = document.getElementById('auth-password');
+    const errElem = document.getElementById('auth-error-msg');
+    
+    const username = uInput ? uInput.value.trim() : '';
+    const password = pInput ? pInput.value.trim() : '';
+    
+    if (errElem) errElem.style.display = 'none';
+    
+    try {
+        const resp = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, password: password })
+        });
+        
+        const data = await resp.json();
+        if (resp.ok && data.status === 'SUCCESS') {
+            localStorage.setItem('drone_saver_token', data.token);
+            localStorage.setItem('drone_saver_user', JSON.stringify(data.user));
+            applyAuthenticatedUser(data.user);
+        } else {
+            if (errElem) {
+                errElem.innerText = data.message || 'Authentication failed. Please check credentials.';
+                errElem.style.display = 'block';
+            }
+        }
+    } catch (err) {
+        if (errElem) {
+            errElem.innerText = 'Network / Server connection error. Please retry.';
+            errElem.style.display = 'block';
+        }
+    }
+}
+
+function quickLogin(username, password) {
+    const uInput = document.getElementById('auth-username');
+    const pInput = document.getElementById('auth-password');
+    if (uInput) uInput.value = username;
+    if (pInput) pInput.value = password;
+    handleLoginSubmit(null);
+}
+
+async function logoutGCS() {
+    try {
+        await fetch('/api/auth/logout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ callsign: currentUser ? currentUser.callsign : 'Operator' })
+        });
+    } catch (e) {}
+    
+    localStorage.removeItem('drone_saver_user');
+    localStorage.removeItem('drone_saver_token');
+    currentUser = null;
+    showAuthModal();
+}
 
 // -------------------------------------------------------------
 // 1. Chart Initializations

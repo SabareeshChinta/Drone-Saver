@@ -45,13 +45,22 @@
                 </div>
             </div>
 
-            <!-- GCS Navigation Tabs -->
-            <nav class="gcs-nav">
-                <button class="nav-tab active" onclick="switchTab('cockpit')">COCKPIT</button>
-                <button class="nav-tab" onclick="switchTab('twin')">DIGITAL TWIN</button>
-                <button class="nav-tab" onclick="switchTab('mission')">MISSION</button>
-                <button class="nav-tab" onclick="switchTab('telemetry')">SYSTEM / LINK</button>
-            </nav>
+            <!-- GCS Navigation Tabs & Auth Badge -->
+            <div class="header-right-group">
+                <nav class="gcs-nav">
+                    <button class="nav-tab active" onclick="switchTab('cockpit')">COCKPIT</button>
+                    <button class="nav-tab" onclick="switchTab('twin')">DIGITAL TWIN</button>
+                    <button class="nav-tab" onclick="switchTab('mission')">MISSION</button>
+                    <button class="nav-tab" onclick="switchTab('telemetry')">SYSTEM / LINK</button>
+                </nav>
+                <div class="header-auth-pill" id="header-auth-pill">
+                    <div class="auth-info-col">
+                        <span class="auth-role-tag" id="auth-role-display">COMMANDER</span>
+                        <span class="auth-callsign-tag" id="auth-callsign-display">DRDO-CMD-01</span>
+                    </div>
+                    <button class="btn-logout" onclick="logoutGCS()" title="Terminate GCS Session">⏻</button>
+                </div>
+            </div>
         </header>
 
         <!-- ========================================================= -->
@@ -356,6 +365,75 @@
             </div>
         </footer>
 
+    </div>
+
+    <!-- ============================================================= -->
+    <!-- 6. OPERATOR AUTHENTICATION MODAL (ACCESS CONTROL GATE)         -->
+    <!-- ============================================================= -->
+    <div id="auth-overlay" class="auth-modal-backdrop">
+        <div class="auth-modal-card">
+            <div class="auth-modal-header">
+                <div class="auth-shield-icon">🛡️</div>
+                <div class="auth-header-text">
+                    <div class="auth-modal-title">DRDO AEROSPACE DEFENSE // GCS-TWIN-01</div>
+                    <div class="auth-modal-sub">UAV GROUND CONTROL ACCESS SECURITY · SIH26054</div>
+                </div>
+            </div>
+            
+            <div class="auth-notice-banner">
+                <span class="auth-badge-sec">RESTRICTED ACCESS</span>
+                <span class="auth-notice-txt">Authorized Military Flight Operations Personnel Only</span>
+            </div>
+
+            <form id="auth-form" onsubmit="handleLoginSubmit(event)">
+                <div class="auth-input-group">
+                    <label class="auth-input-label">OPERATOR CALLSIGN / USERNAME</label>
+                    <input type="text" id="auth-username" class="auth-text-input" placeholder="e.g. commander, operator, observer" required autocomplete="username">
+                </div>
+
+                <div class="auth-input-group">
+                    <label class="auth-input-label">SECURITY ACCESS KEY / PIN</label>
+                    <input type="password" id="auth-password" class="auth-text-input" placeholder="Enter security access key" required autocomplete="current-password">
+                </div>
+
+                <div id="auth-error-msg" class="auth-error-banner" style="display: none;"></div>
+
+                <button type="submit" class="auth-submit-btn" id="auth-submit-button">
+                    AUTHENTICATE & ENTER GCS
+                </button>
+            </form>
+
+            <div class="auth-quick-select-box">
+                <div class="auth-quick-title">QUICK-ACCESS ROLES (1-CLICK EVALUATION)</div>
+                <div class="auth-quick-buttons">
+                    <button type="button" class="auth-role-btn" onclick="quickLogin('commander', 'drdo2026')">
+                        <span class="role-icon">★</span>
+                        <div class="role-desc-col">
+                            <span class="role-name">Mission Commander</span>
+                            <span class="role-id">commander / drdo2026</span>
+                        </div>
+                    </button>
+                    <button type="button" class="auth-role-btn" onclick="quickLogin('operator', 'sih2026')">
+                        <span class="role-icon">✈</span>
+                        <div class="role-desc-col">
+                            <span class="role-name">Flight Controller</span>
+                            <span class="role-id">operator / sih2026</span>
+                        </div>
+                    </button>
+                    <button type="button" class="auth-role-btn" onclick="quickLogin('observer', 'guest')">
+                        <span class="role-icon">👁</span>
+                        <div class="role-desc-col">
+                            <span class="role-name">Guest Observer</span>
+                            <span class="role-id">observer / guest</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-footer-note">
+                SECURE AVIONICS TELEMETRY LINK · 1.0 Hz CAUSAL DIGITAL TWIN · DEFENSE R&D ORGANIZATION
+            </div>
+        </div>
     </div>
 
     <script src="/static/app.js"></script>

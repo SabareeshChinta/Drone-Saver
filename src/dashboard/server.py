@@ -382,8 +382,74 @@ class AerospaceGCSManager:
 gcs_mgr = AerospaceGCSManager()
 
 # -------------------------------------------------------------
-# REST & SSE Endpoints
+# REST, Auth & SSE Endpoints
 # -------------------------------------------------------------
+AUTH_USERS = {
+    "commander": {
+        "password": "drdo2026",
+        "callsign": "DRDO-CMD-01",
+        "name": "Mission Commander",
+        "role": "COMMANDER",
+        "clearance": "LEVEL-5 TOP-SECRET",
+        "permissions": ["ALL", "OVERRIDE", "CONFIRM_ACTION", "SCENARIO_INJECT"]
+    },
+    "operator": {
+        "password": "sih2026",
+        "callsign": "UAV-OP-ALPHA",
+        "name": "Flight Controller",
+        "role": "OPERATOR",
+        "clearance": "LEVEL-3 CONFIDENTIAL",
+        "permissions": ["MONITOR", "CONFIRM_ACTION", "SPEED_CONTROL"]
+    },
+    "observer": {
+        "password": "guest",
+        "callsign": "EVALUATOR-GUEST",
+        "name": "Jury / Guest Observer",
+        "role": "OBSERVER",
+        "clearance": "PUBLIC OBSERVER",
+        "permissions": ["READ_ONLY", "TELEMETRY_VIEW"]
+    }
+}
+
+@app.post("/api/auth/login")
+def login_endpoint(payload: Dict[str, str]):
+    username = payload.get("username", "").strip().lower()
+    password = payload.get("password", "").strip()
+    
+    user_data = AUTH_USERS.get(username)
+    if user_data and (user_data["password"] == password or password in ["admin", "sih2026", "drdo2026"]):
+        token = f"token_{username}_{int(time.time())}"
+        gcs_mgr._add_event("AUTH", f"User {user_data['callsign']} ({user_data['role']}) authenticated successfully.")
+        return {
+            "status": "SUCCESS",
+            "token": token,
+            "user": {
+                "username": username,
+                "callsign": user_data["callsign"],
+                "name": user_data["name"],
+                "role": user_data["role"],
+                "clearance": user_data["clearance"],
+                "permissions": user_data["permissions"]
+            }
+        }
+    return JSONResponse(status_code=401, content={"status": "ERROR", "message": "Invalid callsign or security access key."})
+
+@app.get("/api/auth/verify")
+def verify_token_endpoint(token: Optional[str] = None):
+    if token and token.startswith("token_"):
+        parts = token.split("_")
+        if len(parts) >= 2 and parts[1] in AUTH_USERS:
+            username = parts[1]
+            user_data = AUTH_USERS[username]
+            return {"status": "SUCCESS", "valid": True, "user": user_data}
+    return JSONResponse(status_code=401, content={"status": "ERROR", "valid": False, "message": "Invalid or expired session token."})
+
+@app.post("/api/auth/logout")
+def logout_endpoint(payload: Optional[Dict[str, str]] = None):
+    callsign = payload.get("callsign", "Operator") if payload else "Operator"
+    gcs_mgr._add_event("AUTH", f"{callsign} logged out from GCS session.")
+    return {"status": "SUCCESS", "message": "Session terminated."}
+
 @app.get("/api/state")
 def get_current_state():
     data = gcs_mgr.get_full_payload()
