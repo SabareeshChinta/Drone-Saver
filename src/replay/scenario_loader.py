@@ -6,7 +6,9 @@ Problem Statement: SIH26054 - DRDO
 
 import os
 import sys
-sys.path.insert(0, '.')
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 import yaml
 import pandas as pd
 import numpy as np
@@ -20,10 +22,15 @@ from src.fault_injection.intake import IntakeManifoldLeakFault
 from src.fault_injection.sensors import SensorDriftFault, SensorDropoutFault
 
 class ScenarioLoader:
-    def __init__(self, scenarios_dir="scenarios"):
+    def __init__(self, scenarios_dir=None):
+        if scenarios_dir is None:
+            scenarios_dir = os.path.join(PROJECT_ROOT, "scenarios")
         self.scenarios_dir = scenarios_dir
         
     def load_scenario(self, scenario_yaml_path):
+        if not os.path.isabs(scenario_yaml_path):
+            scenario_yaml_path = os.path.join(PROJECT_ROOT, scenario_yaml_path)
+            
         if not os.path.exists(scenario_yaml_path):
             raise FileNotFoundError(f"Scenario file not found: {scenario_yaml_path}")
             
@@ -40,10 +47,10 @@ class ScenarioLoader:
         
         # Load baseline healthy flight
         fid_num = flight_id.lower().replace('flight_', '')
-        base_file = f"data/processed/flights_healthy/flight_{fid_num}_healthy.csv"
+        base_file = os.path.join(PROJECT_ROOT, "data", "processed", "flights_healthy", f"flight_{fid_num}_healthy.csv")
         if not os.path.exists(base_file):
             # Fallback to canonical
-            base_file = f"data/processed/canonical/flight_{fid_num}_canonical.csv"
+            base_file = os.path.join(PROJECT_ROOT, "data", "processed", "canonical", f"flight_{fid_num}_canonical.csv")
             
         df_base = pd.read_csv(base_file)
         if 'rpm' in df_base.columns and (df_base['rpm'] > 1800).any():

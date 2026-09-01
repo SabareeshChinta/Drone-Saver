@@ -12,15 +12,25 @@ Problem Statement: SIH26054 - DRDO
 
 import os
 import sys
-sys.path.insert(0, '.')
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 import yaml
 import pandas as pd
 from datetime import datetime, timezone
 
 class FailsafeStateMachine:
-    def __init__(self, policy_path="config/mission_policy.yaml", log_dir="results/events"):
+    def __init__(self, policy_path=None, log_dir=None):
+        if policy_path is None:
+            policy_path = os.path.join(PROJECT_ROOT, "config", "mission_policy.yaml")
+        if log_dir is None:
+            log_dir = os.path.join(PROJECT_ROOT, "results", "events")
+            
         self.log_dir = log_dir
-        os.makedirs(log_dir, exist_ok=True)
+        try:
+            os.makedirs(log_dir, exist_ok=True)
+        except Exception:
+            pass
         self.events_log_file = os.path.join(log_dir, "decision_events.csv")
         
         self.engine_state = "HEALTHY"
@@ -211,8 +221,11 @@ class FailsafeStateMachine:
         return self.engine_state, self.mission_recommendation, self.operator_decision, self.simulated_action, short_cmd
 
     def _append_to_event_log(self, event):
-        df_new = pd.DataFrame([event])
-        if not os.path.exists(self.events_log_file):
-            df_new.to_csv(self.events_log_file, index=False)
-        else:
-            df_new.to_csv(self.events_log_file, mode='a', header=False, index=False)
+        try:
+            df_new = pd.DataFrame([event])
+            if not os.path.exists(self.events_log_file):
+                df_new.to_csv(self.events_log_file, index=False)
+            else:
+                df_new.to_csv(self.events_log_file, mode='a', header=False, index=False)
+        except Exception:
+            pass

@@ -7,7 +7,9 @@ Problem Statement: SIH26054 - DRDO
 
 import os
 import sys
-sys.path.insert(0, '.')
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 import time
 import glob
 import pickle
@@ -25,12 +27,20 @@ from src.healthy_baseline import PolynomialFeatureRegressor
 from src.mission_risk.mission_reliability import UAVMissionReliabilityEngine
 
 class LiveDigitalTwinPipeline:
-    def __init__(self, model_dir="data/models", results_dir="results"):
+    def __init__(self, model_dir=None, results_dir=None):
+        if model_dir is None:
+            model_dir = os.path.join(PROJECT_ROOT, "data", "models")
+        if results_dir is None:
+            results_dir = os.path.join(PROJECT_ROOT, "results")
+            
         self.model_dir = model_dir
         self.results_dir = results_dir
-        os.makedirs(f"{results_dir}/replay", exist_ok=True)
-        os.makedirs(f"{results_dir}/events", exist_ok=True)
-        os.makedirs(f"{results_dir}/figures", exist_ok=True)
+        try:
+            os.makedirs(f"{results_dir}/replay", exist_ok=True)
+            os.makedirs(f"{results_dir}/events", exist_ok=True)
+            os.makedirs(f"{results_dir}/figures", exist_ok=True)
+        except Exception:
+            pass
         
         self.validator = TelemetryPacketValidator()
         self.normalizer = AirframeBaselineNormalizer()
@@ -54,7 +64,7 @@ class LiveDigitalTwinPipeline:
             self.rul_estimator = pickle.load(fp)
             
     def _fit_or_load_baseline_models(self):
-        healthy_files = sorted(glob.glob("data/processed/canonical/*_canonical.csv"))
+        healthy_files = sorted(glob.glob(os.path.join(PROJECT_ROOT, "data", "processed", "canonical", "*_canonical.csv")))
         dfs = []
         for f in healthy_files:
             df = pd.read_csv(f)
