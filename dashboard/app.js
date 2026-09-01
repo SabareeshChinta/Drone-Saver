@@ -31,7 +31,7 @@ function initAllCharts() {
             labels: [],
             datasets: [
                 { label: 'OBSERVED EGT (CYL 2)', borderColor: '#f97316', borderWidth: 2, data: [], pointRadius: 0, tension: 0.1 },
-                { label: 'BASELINE EGT (CYL 2)', borderColor: '#38bdf8', borderDash: [4, 4], borderWidth: 1.5, data: [], pointRadius: 0, tension: 0.1 },
+                { label: 'BASELINE EGT (CYL 2)', borderColor: '#cbd5e1', borderDash: [4, 4], borderWidth: 1.5, data: [], pointRadius: 0, tension: 0.1 },
                 { label: 'REDLINE THRESHOLD (810°C)', borderColor: '#ef4444', borderDash: [2, 4], borderWidth: 1.2, data: [], pointRadius: 0, tension: 0 }
             ]
         },
@@ -109,7 +109,7 @@ function initAllCharts() {
         data: {
             labels: [],
             datasets: [
-                { label: 'ALTITUDE (ft / 100)', borderColor: '#38bdf8', borderWidth: 1.5, data: [], pointRadius: 0 },
+                { label: 'ALTITUDE (ft / 100)', borderColor: '#e2e8f0', borderWidth: 1.5, data: [], pointRadius: 0 },
                 { label: 'AIRSPEED (kt)', borderColor: '#10b981', borderWidth: 1.5, data: [], pointRadius: 0 }
             ]
         },
@@ -442,7 +442,7 @@ function drawMissionMapPlaceholder() {
     }
 
     // Reconstructed 2D MALE UAV Orbit Track
-    ctx.strokeStyle = '#38bdf8';
+    ctx.strokeStyle = '#71717a';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(300, 175, 110, 0, Math.PI * 2);

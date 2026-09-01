@@ -14,8 +14,8 @@
     --c-yellow: #f59e0b;
     --c-orange: #f97316;
     --c-red: #ef4444;
-    --c-cyan: #38bdf8;
-    --c-blue: #3b82f6;
+    --c-cyan: #e2e8f0;
+    --c-blue: #a1a1aa;
     
     --font-mono: 'Consolas', 'Roboto Mono', 'Menlo', monospace;
     --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
@@ -545,7 +545,7 @@ body {
     padding: 8px;
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    color: #38bdf8;
+    color: #cbd5e1;
     overflow: auto;
     flex: 1;
 }
@@ -591,19 +591,19 @@ body {
 }
 
 .btn-sih-master {
-    background: #1d4ed8;
-    border-color: #3b82f6;
+    background: #15803d;
+    border-color: #22c55e;
     color: #ffffff;
     font-weight: 800;
     padding: 5px 12px;
 }
 
 .btn-sih-master:hover {
-    background: #2563eb;
+    background: #16a34a;
 }
 
 .btn-reset { background: #222222; }
-.btn-spd.active { background: #0284c7; color: #ffffff; border-color: #38bdf8; }
+.btn-spd.active { background: #333333; color: #ffffff; border-color: #555555; }
 
 /* Utilities */
 .text-green { color: var(--c-green); }
