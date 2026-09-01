@@ -88,80 +88,91 @@ class AerospaceGCSManager:
         prev_fault = "HEALTHY"
         
         while self.is_running:
-            if self.is_paused:
-                time.sleep(0.1)
-                continue
-                
-            raw_pkt = self.source.read()
-            if raw_pkt is None:
-                time.sleep(1.0)
-                self._init_source()
-                continue
-                
-            self.packets_received += 1
-            self.last_packet_time = time.time()
-            
-            state, lat, feats = self.pipeline.process_packet(raw_pkt)
-            
-            with self.lock:
-                self.previous_features = self.latest_features.copy() if self.latest_features else feats.copy()
-                self.latest_state = state
-                self.latest_latencies = lat
-                self.latest_features = feats
-                
-                # Check for state transitions and record chronological events
-                if state.mission_recommendation != prev_fstate:
-                    self._add_event("DIRECTIVE", f"Failsafe recommendation: {state.mission_recommendation} | {state.recommendation}")
-                    prev_fstate = state.mission_recommendation
+            try:
+                if self.is_paused:
+                    time.sleep(0.1)
+                    continue
                     
-                if state.fault != prev_fault and state.fault != "HEALTHY" and state.fault_probability > 0.60:
-                    cyl_txt = f"Cyl #{state.affected_cylinder}" if state.affected_cylinder > 0 else "Global Engine"
-                    self._add_event("FAULT", f"Stage 2: {state.fault} diagnosed on {cyl_txt} (Conf: {state.fault_probability*100:.1f}%)")
-                    prev_fault = state.fault
-                elif state.fault == "HEALTHY" and prev_fault != "HEALTHY":
-                    prev_fault = "HEALTHY"
+                with self.lock:
+                    src = self.source
+                if not src:
+                    time.sleep(0.1)
+                    continue
+
+                raw_pkt = src.read()
+                if raw_pkt is None:
+                    time.sleep(1.0)
+                    with self.lock:
+                        self._init_source()
+                    continue
                     
-                if state.anomaly_score > 0.40 and (len(self.history) == 0 or self.history[-1]['anomaly_score'] <= 0.40):
-                    self._add_event("ANOMALY", f"Stage 1: Residual anomaly detected (Score: {state.anomaly_score:.2f})")
+                self.packets_received += 1
+                self.last_packet_time = time.time()
                 
-                # Append historical time series point
-                hist_item = {
-                    'time_seconds': state.time_seconds,
-                    'health_score': state.engine_health,
-                    'anomaly_score': state.anomaly_score,
-                    'fault_prob': state.fault_probability,
-                    'scenario_rul_sec': state.scenario_rul_sec,
-                    'scenario_time_to_critical_sec': state.scenario_rul_sec,
-                    'p_mission_success': state.mission_success_probability,
-                    'egt_1': feats.get('egt_1_c', 0.0),
-                    'egt_2': feats.get('egt_2_c', 0.0),
-                    'egt_3': feats.get('egt_3_c', 0.0),
-                    'egt_4': feats.get('egt_4_c', 0.0),
-                    'expected_egt_2': feats.get('expected_egt_2_c', 0.0),
-                    'residual_egt_2': feats.get('residual_egt_2_c', 0.0),
-                    'cht_1': feats.get('cht_1_c', 0.0),
-                    'cht_2': feats.get('cht_2_c', 0.0),
-                    'cht_3': feats.get('cht_3_c', 0.0),
-                    'cht_4': feats.get('cht_4_c', 0.0),
-                    'expected_cht_2': feats.get('expected_cht_2_c', 0.0),
-                    'residual_cht_2': feats.get('residual_cht_2_c', 0.0),
-                    'rpm': feats.get('rpm', 0.0),
-                    'map_kpa': feats.get('map_kpa', 0.0),
-                    'oil_pressure_kpa': feats.get('oil_pressure_kpa', 0.0),
-                    'oil_temp_c': feats.get('oil_temp_c', 0.0),
-                    'fuel_flow_lph': feats.get('fuel_flow_lph', 0.0),
-                    'altitude_m': feats.get('altitude_m', 0.0),
-                    'airspeed_mps': feats.get('airspeed_mps', 0.0),
-                    'engine_state': state.engine_state,
-                    'mission_recommendation': state.mission_recommendation,
-                    'operator_decision': state.operator_decision,
-                    'simulated_action': state.simulated_action,
-                    'failsafe_state': state.failsafe_state
-                }
-                self.history.append(hist_item)
-                
-            delay = 1.0 / max(0.1, self.speed_multiplier)
-            time.sleep(delay)
+                state, lat, feats = self.pipeline.process_packet(raw_pkt)
+            
+                with self.lock:
+                    self.previous_features = self.latest_features.copy() if self.latest_features else feats.copy()
+                    self.latest_state = state
+                    self.latest_latencies = lat
+                    self.latest_features = feats
+                    
+                    # Check for state transitions and record chronological events
+                    if state.mission_recommendation != prev_fstate:
+                        self._add_event("DIRECTIVE", f"Failsafe recommendation: {state.mission_recommendation} | {state.recommendation}")
+                        prev_fstate = state.mission_recommendation
+                        
+                    if state.fault != prev_fault and state.fault != "HEALTHY" and state.fault_probability > 0.60:
+                        cyl_txt = f"Cyl #{state.affected_cylinder}" if state.affected_cylinder > 0 else "Global Engine"
+                        self._add_event("FAULT", f"Stage 2: {state.fault} diagnosed on {cyl_txt} (Conf: {state.fault_probability*100:.1f}%)")
+                        prev_fault = state.fault
+                    elif state.fault == "HEALTHY" and prev_fault != "HEALTHY":
+                        prev_fault = "HEALTHY"
+                        
+                    if state.anomaly_score > 0.40 and (len(self.history) == 0 or self.history[-1]['anomaly_score'] <= 0.40):
+                        self._add_event("ANOMALY", f"Stage 1: Residual anomaly detected (Score: {state.anomaly_score:.2f})")
+                    
+                    # Append historical time series point
+                    hist_item = {
+                        'time_seconds': state.time_seconds,
+                        'health_score': state.engine_health,
+                        'anomaly_score': state.anomaly_score,
+                        'fault_prob': state.fault_probability,
+                        'scenario_rul_sec': state.scenario_rul_sec,
+                        'scenario_time_to_critical_sec': state.scenario_rul_sec,
+                        'p_mission_success': state.mission_success_probability,
+                        'egt_1': feats.get('egt_1_c', 0.0),
+                        'egt_2': feats.get('egt_2_c', 0.0),
+                        'egt_3': feats.get('egt_3_c', 0.0),
+                        'egt_4': feats.get('egt_4_c', 0.0),
+                        'expected_egt_2': feats.get('expected_egt_2_c', 0.0),
+                        'residual_egt_2': feats.get('residual_egt_2_c', 0.0),
+                        'cht_1': feats.get('cht_1_c', 0.0),
+                        'cht_2': feats.get('cht_2_c', 0.0),
+                        'cht_3': feats.get('cht_3_c', 0.0),
+                        'cht_4': feats.get('cht_4_c', 0.0),
+                        'expected_cht_2': feats.get('expected_cht_2_c', 0.0),
+                        'residual_cht_2': feats.get('residual_cht_2_c', 0.0),
+                        'rpm': feats.get('rpm', 0.0),
+                        'map_kpa': feats.get('map_kpa', 0.0),
+                        'oil_pressure_kpa': feats.get('oil_pressure_kpa', 0.0),
+                        'oil_temp_c': feats.get('oil_temp_c', 0.0),
+                        'fuel_flow_lph': feats.get('fuel_flow_lph', 0.0),
+                        'altitude_m': feats.get('altitude_m', 0.0),
+                        'airspeed_mps': feats.get('airspeed_mps', 0.0),
+                        'engine_state': state.engine_state,
+                        'mission_recommendation': state.mission_recommendation,
+                        'operator_decision': state.operator_decision,
+                        'simulated_action': state.simulated_action,
+                        'failsafe_state': state.failsafe_state
+                    }
+                    self.history.append(hist_item)
+                    
+                delay = 1.0 / max(0.1, self.speed_multiplier)
+                time.sleep(delay)
+            except Exception as e:
+                print(f"[STREAMING LOOP ERROR]: {e}")
+                time.sleep(0.5)
 
     def _calc_trend(self, curr_val, prev_val, threshold=0.5):
         if curr_val is None or prev_val is None or curr_val == "N/A" or prev_val == "N/A":

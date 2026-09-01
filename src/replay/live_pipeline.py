@@ -138,7 +138,7 @@ class LiveDigitalTwinPipeline:
                 single_df[c] = 0.0
         anom_score, health_idx, is_anom = self.anomaly_detector.predict_anomaly_score(single_df)
         anom_val = float(anom_score[0])
-        health_val = float(health_idx[0])
+        health_val = float(self.tracker.current_health)
         t_anom = (time.perf_counter() - t0) * 1000.0
         
         # 6. Stage 2: Fault Classifier & Cylinder Isolator
@@ -167,10 +167,15 @@ class LiveDigitalTwinPipeline:
         time_remaining_mission = max(0.0, total_mission_duration_sec - t_curr)
         time_needed_to_rtb = 1200.0
         
-        sigma = max(0.05, (rul_val - rul_low_val) / (rul_val + 1e-3))
-        mc_ruls = np.random.lognormal(mean=np.log(max(1.0, rul_val)), sigma=sigma, size=1000)
-        p_mission_success = float(np.mean(mc_ruls > time_remaining_mission))
-        p_rtb_safe = float(np.mean(mc_ruls > time_needed_to_rtb))
+        if top_fault == 'HEALTHY' or (health_val > 0.88 and top_prob < 0.60):
+            p_mission_success = 0.99
+            p_rtb_safe = 0.99
+            rul_val = max(rul_val, 7200.0)
+        else:
+            sigma = max(0.05, (rul_val - rul_low_val) / (rul_val + 1e-3))
+            mc_ruls = np.random.lognormal(mean=np.log(max(1.0, rul_val)), sigma=sigma, size=1000)
+            p_mission_success = float(np.mean(mc_ruls > time_remaining_mission))
+            p_rtb_safe = float(np.mean(mc_ruls > time_needed_to_rtb))
         
         # Failsafe State Machine Update
         mean_conf = float(np.mean(list(confidences.values())))

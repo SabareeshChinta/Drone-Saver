@@ -42,7 +42,12 @@ class AirframeBaselineNormalizer:
                     for c in res_cols:
                         self.residual_offsets[c] = float(buf_df[c].mean())
                     self.is_calibrated = True
-                    # print(f"[AIRFRAME RESIDUAL CALIBRATION] Zero-point calibrated across {len(self.buffer)} samples.")
+                else:
+                    calibrated_feats = step_feats.copy()
+                    for c in res_cols:
+                        vals = [b[c] for b in self.buffer]
+                        calibrated_feats[c] = step_feats.get(c, 0.0) - float(np.mean(vals))
+                    return calibrated_feats
             return step_feats
             
         # Apply calibrated offsets

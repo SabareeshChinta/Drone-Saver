@@ -46,6 +46,11 @@ class ScenarioLoader:
             base_file = f"data/processed/canonical/flight_{fid_num}_canonical.csv"
             
         df_base = pd.read_csv(base_file)
+        if 'rpm' in df_base.columns and (df_base['rpm'] > 1800).any():
+            first_cruise_idx = df_base[df_base['rpm'] > 1800].index[0]
+            if first_cruise_idx > 0:
+                df_base = df_base.iloc[first_cruise_idx:].copy().reset_index(drop=True)
+                df_base['time_seconds'] = range(len(df_base))
         
         # Apply Fault Injection based on spec
         if fault_type == 'HEALTHY' or fault_type == 'NONE':
