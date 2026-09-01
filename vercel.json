@@ -1,12 +1,19 @@
 {
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/static/(.*)",
-      "destination": "/dashboard/$1"
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/dashboard/$1"
     },
     {
-      "source": "/(.*)",
-      "destination": "/src/dashboard/server.py"
+      "src": "/(.*)",
+      "dest": "/api/index.py"
     }
   ]
 }
