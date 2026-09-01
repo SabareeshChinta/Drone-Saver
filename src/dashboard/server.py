@@ -7,7 +7,9 @@ Problem Statement: SIH26054 - DRDO
 
 import os
 import sys
-sys.path.insert(0, '.')
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 import time
 import json
 import glob
@@ -40,7 +42,7 @@ app.add_middleware(
 class AerospaceGCSManager:
     def __init__(self):
         self.pipeline = LiveDigitalTwinPipeline()
-        self.active_scenario = "scenarios/SIH_FLAGSHIP_DEMO.yaml"
+        self.active_scenario = os.path.join(PROJECT_ROOT, "scenarios", "SIH_FLAGSHIP_DEMO.yaml")
         self.source_type = "replay"
         self.source = None
         
@@ -509,12 +511,13 @@ async def sse_stream(request: Request):
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 # Static mounting
-os.makedirs("dashboard", exist_ok=True)
-app.mount("/static", StaticFiles(directory="dashboard"), name="static")
+DASHBOARD_DIR = os.path.join(PROJECT_ROOT, "dashboard")
+os.makedirs(DASHBOARD_DIR, exist_ok=True)
+app.mount("/static", StaticFiles(directory=DASHBOARD_DIR), name="static")
 
 @app.get("/")
 def serve_index():
-    index_path = os.path.join("dashboard", "index.html")
+    index_path = os.path.join(DASHBOARD_DIR, "index.html")
     if os.path.exists(index_path):
         with open(index_path, "r", encoding="utf-8") as fp:
             return HTMLResponse(content=fp.read())
