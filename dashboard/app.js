@@ -321,8 +321,7 @@ function updateGCSState(data) {
     document.getElementById('rul-ci-bounds').innerText = `90% INTERVAL: [${rul.ci_90_low_min} to ${rul.ci_90_high_min} min]`;
     document.getElementById('mr-rem-min').innerText = `${rul.remaining_mission_min} min`;
     document.getElementById('mr-succ-prob').innerText = `${mRisk.mission_success_prob_pct}%`;
-    document.getElementById('mr-rtb-prob').innerText = `${mRisk.safe_rtb_prob_pct}%`;
-    document.getElementById('mr-curr-dir').innerText = mRisk.directive;
+    document.getElementById('mr-curr-dir').innerText = (mRisk.directive || state.failsafe_state || 'CONTINUE').replace('_MISSION', '').replace('_', ' ');
 
     // 8. System View (Tab 4)
     document.getElementById('sys-pkts').innerText = sys.packets_received.toLocaleString();

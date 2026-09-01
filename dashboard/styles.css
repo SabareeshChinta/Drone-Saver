@@ -549,7 +549,16 @@ body {
     display: grid;
     grid-template-columns: 260px 1fr 340px;
     gap: 6px;
-    height: 120px;
+    min-height: 110px;
+    max-height: 125px;
+    flex-shrink: 0;
+}
+
+.panel-rul-mini, .panel-health-mini, .panel-mission-mini {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .rul-display-block {
@@ -560,36 +569,39 @@ body {
     flex: 1;
     text-align: center;
     font-family: var(--font-sans);
+    padding: 2px 0;
 }
 
 .rul-primary-val {
     font-family: var(--font-mono);
-    font-size: 1.55rem;
+    font-size: 1.35rem;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--c-orange);
+    line-height: 1.1;
 }
 
 .rul-ci-val {
     font-family: var(--font-mono);
-    font-size: 0.70rem;
+    font-size: 0.66rem;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     color: var(--text-dim);
-    margin: 2px 0;
+    margin: 2px 0 1px 0;
 }
 
 .rul-note {
     font-family: var(--font-sans);
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     color: var(--text-muted);
-    line-height: 1.25;
+    line-height: 1.15;
 }
 
 .chart-canvas-wrapper-mini {
     position: relative;
     width: 100%;
-    height: 80px;
+    flex: 1;
+    min-height: 60px;
 }
 
 .mr-grid {
@@ -598,13 +610,14 @@ body {
     gap: 4px;
     font-size: 0.65rem;
     flex: 1;
+    align-content: stretch;
 }
 
 .mr-stat {
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     border-radius: 2px;
-    padding: 5px;
+    padding: 3px 5px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -613,18 +626,26 @@ body {
 
 .mr-lbl { 
     color: var(--text-muted); 
-    font-size: 0.60rem; 
+    font-size: 0.58rem; 
     font-family: var(--font-sans);
     font-weight: 600;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     display: block; 
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .mr-val { 
-    font-size: 0.92rem; 
+    font-size: 0.85rem; 
     font-weight: 700; 
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
-    margin-top: 1px;
+    margin-top: 2px;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 4. Full Tab Grids */
