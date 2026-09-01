@@ -1,14 +1,14 @@
 /* Drone Saver — Aerospace Ground Control Station (GCS) Theme */
 :root {
-    --bg-main: #0c1017;
-    --bg-panel: #121824;
-    --bg-panel-alt: #161e2e;
-    --border-color: #1e293b;
-    --border-subtle: #172033;
+    --bg-main: #000000;
+    --bg-panel: #0a0a0a;
+    --bg-panel-alt: #111111;
+    --border-color: #222222;
+    --border-subtle: #161616;
     
     --text-main: #f1f5f9;
-    --text-muted: #64748b;
-    --text-dim: #94a3b8;
+    --text-muted: #71717a;
+    --text-dim: #a1a1aa;
     
     --c-green: #10b981;
     --c-yellow: #f59e0b;
@@ -243,12 +243,12 @@ body {
 
 .tele-table td {
     padding: 3px 4px;
-    border-bottom: 1px solid #161f30;
+    border-bottom: 1px solid #181818;
 }
 
 .t-name { color: var(--text-muted); font-size: 0.65rem; font-weight: 600; }
 .t-val { font-weight: 800; color: #ffffff; text-align: right; }
-.t-unit { color: #64748b; font-size: 0.62rem; padding-left: 4px; }
+.t-unit { color: #71717a; font-size: 0.62rem; padding-left: 4px; }
 .t-trend { color: var(--c-cyan); font-size: 0.65rem; text-align: right; width: 20px; }
 
 /* Cylinder Array */
@@ -283,7 +283,7 @@ body {
     font-size: 0.65rem;
     font-weight: 800;
     color: var(--text-dim);
-    border-bottom: 1px solid #1a2333;
+    border-bottom: 1px solid #1c1c1c;
     padding-bottom: 2px;
     margin-bottom: 4px;
 }
@@ -406,7 +406,7 @@ body {
 
 .ev-bar {
     height: 4px;
-    background: #1e293b;
+    background: #141414;
     border-radius: 2px;
     overflow: hidden;
     margin-top: 2px;
@@ -433,13 +433,13 @@ body {
 }
 
 .event-log-list {
-    background: #090d14;
+    background: #050505;
     border: 1px solid var(--border-subtle);
     border-radius: 2px;
     padding: 4px;
     font-family: var(--font-mono);
     font-size: 0.62rem;
-    color: #94a3b8;
+    color: #a1a1aa;
     overflow-y: auto;
     flex: 1;
     max-height: 90px;
@@ -531,7 +531,7 @@ body {
 }
 
 .mission-map-placeholder {
-    background: #090d14;
+    background: #050505;
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
     flex: 1;
@@ -539,7 +539,7 @@ body {
 }
 
 .json-stream-box {
-    background: #090d14;
+    background: #050505;
     border: 1px solid var(--border-subtle);
     border-radius: 3px;
     padding: 8px;
@@ -575,8 +575,8 @@ body {
 }
 
 .gcs-btn {
-    background: #1e293b;
-    border: 1px solid #334155;
+    background: #141414;
+    border: 1px solid #282828;
     color: #e2e8f0;
     padding: 4px 8px;
     border-radius: 3px;
@@ -587,7 +587,7 @@ body {
 }
 
 .gcs-btn:hover {
-    background: #334155;
+    background: #222222;
 }
 
 .btn-sih-master {
@@ -602,7 +602,7 @@ body {
     background: #2563eb;
 }
 
-.btn-reset { background: #334155; }
+.btn-reset { background: #222222; }
 .btn-spd.active { background: #0284c7; color: #ffffff; border-color: #38bdf8; }
 
 /* Utilities */
