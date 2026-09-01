@@ -1,0 +1,7 @@
+.git
+.gemini
+__pycache__
+*.pyc
+results/figures
+presentation
+tests
